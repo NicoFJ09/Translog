@@ -1,0 +1,30 @@
+# Ignorar archivos y carpetas de macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Archivos de Spotlight
+._*
+
+# Archivos de iconos de carpeta
+Icon?
+
+# Archivos de Thumbs
+Thumbs.db
+
+# Archivos temporales de VS Code
+.vscode/
+
+# Archivos de Python compilados
+__pycache__/
+*.pyc
+
+# Archivos de logs
+*.log
+
+# Archivos de backup
+*~
+
+# Otros archivos temporales
+*.swp
+*.swo
