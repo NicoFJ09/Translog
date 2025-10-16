@@ -314,18 +314,18 @@ verb_infinitive(can, poder, irregular).
 % =====================
 % phrase(English, Spanish)
 
-phrase(hello, hola).
-phrase(goodbye, adios).
-phrase(please, por_favor).
-phrase(thank_you, gracias).
-phrase(you_are_welcome, de_nada).
-phrase(excuse_me, perdon).
-phrase(good_morning, buenos_dias).
-phrase(good_afternoon, buenas_tardes).
-phrase(good_night, buenas_noches).
-phrase(how_are_you, como_estas).
-phrase(what_is_your_name, como_te_llamas).
-phrase(my_name_is, me_llamo).
+common_phrase(hello, hola).
+common_phrase(goodbye, adios).
+common_phrase(please, por_favor).
+common_phrase(thank_you, gracias).
+common_phrase(you_are_welcome, de_nada).
+common_phrase(excuse_me, perdon).
+common_phrase(good_morning, buenos_dias).
+common_phrase(good_afternoon, buenas_tardes).
+common_phrase(good_night, buenas_noches).
+common_phrase(how_are_you, como_estas).
+common_phrase(what_is_your_name, como_te_llamas).
+common_phrase(my_name_is, me_llamo).
 
 
 % =====================
