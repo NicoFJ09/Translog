@@ -41,6 +41,56 @@ procesar_opcion(_) :-
     nl, write('Opción no válida. Inténtelo de nuevo.'), nl, nl,
     start. 
 
+% ====================================
+% PASAR LUEGO A INPUT HANDLER - TESTING IN MAIN
+% ====================================
+
+% --------------------------------------------------
+% Convierte una cadena en una lista de palabras/tokens
+% --------------------------------------------------
+string_to_word_list(String, WordList) :-
+    string_lower(String, LowerCase),
+    remove_accents(LowerCase, NoAccents),
+    split_string(NoAccents, " ", " \t\n", Parts),  % separa por espacios
+    maplist(split_punctuation, Parts, NestedTokens),
+    flatten(NestedTokens, FlatTokens),
+    maplist(atom_string, WordList, FlatTokens).
+
+% --------------------------------------------------
+% Divide cada palabra si tiene puntuación adjunta
+% Ej: "big." -> ["big", "."]
+% --------------------------------------------------
+split_punctuation(Word, Tokens) :-
+    string_chars(Word, Chars),
+    (   append(WordChars, [Last], Chars),
+        member(Last, ['.', ',', '?', '!', ';', ':'])
+    ->  string_chars(Stem, WordChars),
+        Tokens = [Stem, Last]
+    ;   Tokens = [Word]
+    ).
+
+% --------------------------------------------------
+% Elimina tildes y acentos
+% --------------------------------------------------
+remove_accents(Str, Clean) :-
+    string_chars(Str, Chars),
+    maplist(replace_accent, Chars, CleanChars),
+    string_chars(Clean, CleanChars).
+
+replace_accent('á','a').
+replace_accent('é','e').
+replace_accent('í','i').
+replace_accent('ó','o').
+replace_accent('ú','u').
+replace_accent('ñ','n').
+replace_accent('Á','a').
+replace_accent('É','e').
+replace_accent('Í','i').
+replace_accent('Ó','o').
+replace_accent('Ú','u').
+replace_accent('Ñ','n').
+replace_accent(C,C).
+
 % Pedir oracion a traducir
 
 pedir_oracion(ei) :-
@@ -49,12 +99,8 @@ pedir_oracion(ei) :-
     flush_output,
     read_line_to_string(user_input, Oracion_string),
     string_lower(Oracion_string, String_minuscula),
-    (
-        member(String_minuscula, ["yes", "ok", "y", "ja", "oui"])   % aqui llamar revision de estructura de oracion
-        -> format(">> Inserte aqui traduccion.~n"), continuar(ei)
-        ;  nl, write('Ha ocurrido un error, por favor pruebe insertar una diferente estructura para la frase que desea traducir.'), 
-           nl, continuar(ei)
-    ).
+    string_to_word_list(String_minuscula, Input),         % INPUT is to be iterated and classified
+    write('Input: '), write(Input), nl, continuar(ei).
 
 ask_for_sentence(ie) :-
     nl,
@@ -62,12 +108,8 @@ ask_for_sentence(ie) :-
     flush_output,
     read_line_to_string(user_input, Sentence_string),
     string_lower(Sentence_string, String_lowercase),
-    (
-        member(String_lowercase, ["yes", "ok", "y", "ja", "oui"]) % Aqui llamar revision de estructura de oracion
-        -> format(">> Translation goes here~n"), continuar(ie)
-        ;  nl, write('Something has gone wrong while processing your sentence, please try again with different wording.'), 
-           nl, continuar(ie)
-    ).
+    string_to_word_list(String_lowercase, Input),         % INPUT is to be iterated and classified
+    write('Input: '), write(Input), nl, continuar(ie).
 
 % Preguntar si se quiere seguir traduciendo
 
