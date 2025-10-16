@@ -239,12 +239,14 @@ conjunction(that, que).
 % =====================
 % question_word(English, Spanish)
 
+
 question_word(what, que).
 question_word(where, donde).
 question_word(when, cuando).
 question_word(why, por_que).
 question_word(how, como).
 question_word(who, quien).
+question_word(whom, quien).
 question_word(which, cual).
 question_word(how_many, cuantos).
 question_word(how_much, cuanto).
@@ -440,7 +442,7 @@ object_pronoun(to_them, les, indirect, third_plural).
 
 
 % =====================
-% 16. NEGATIVE WORDS
+% 15. NEGATIVE WORDS
 % =====================
 % negative(English, Spanish)
 
@@ -449,25 +451,38 @@ negative(not, no).
 negative(never, nunca).
 negative(nothing, nada).
 negative(nobody, nadie).
+negative(no_one, nadie).
 negative(none, ninguno).
 negative(neither, tampoco).
-
+negative(nor, ni).
 
 
 % =====================
-% 18. QUANTIFIERS
+% 17. QUANTIFIERS
 % =====================
 % quantifier(English, Spanish)
 
-quantifier(all, todo).
-quantifier(some, algo).
-quantifier(many, muchos).
-quantifier(few, pocos).
-quantifier(several, varios).
-quantifier(enough, suficiente).
-quantifier(too_much, demasiado).
-quantifier(little, poco).
-quantifier(a_lot, mucho).
-quantifier(both, ambos).
-quantifier(each, cada).
-quantifier(every, cada).
+quantifier(many, muchos, masculine, plural).
+quantifier(many, muchas, feminine, plural).
+quantifier(much, mucho, masculine, singular).
+quantifier(much, mucha, feminine, singular).
+quantifier(few, pocos, masculine, plural).
+quantifier(few, pocas, feminine, plural).
+quantifier(little, poco, masculine, singular).
+quantifier(little, poca, feminine, singular).
+quantifier(several, varios, masculine, plural).
+quantifier(several, varias, feminine, plural).
+quantifier(some, algunos, masculine, plural).
+quantifier(some, algunas, feminine, plural).
+quantifier(all, todos, masculine, plural).
+quantifier(all, todas, feminine, plural).
+quantifier(each, cada, _, singular).
+quantifier(every, cada, _, singular).
+quantifier(both, ambos, masculine, plural).
+quantifier(both, ambas, feminine, plural).
+quantifier(enough, suficiente, _, singular).
+quantifier(enough, suficientes, _, plural).
+quantifier(too_much, demasiado, masculine, singular).
+quantifier(too_much, demasiada, feminine, singular).
+quantifier(too_many, demasiados, masculine, plural).
+quantifier(too_many, demasiadas, feminine, plural).
