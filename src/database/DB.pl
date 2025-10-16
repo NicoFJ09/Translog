@@ -253,60 +253,137 @@ question_word(how_much, cuanto).
 
 
 % =====================
-% 9. VERBS (Uses Conjugation System)
+% 9. VERBS (Infinitives and Common Forms)
 % =====================
-% See conjugation_system.pl for verb conjugation rules
-% This section just defines which verbs exist
+% verb_infinitive(English, Spanish, Type)
 
-% Regular -ar verbs
-verb_infinitive(to_speak, hablar, ar).
-verb_infinitive(to_talk, hablar, ar).
-verb_infinitive(to_walk, caminar, ar).
-verb_infinitive(to_work, trabajar, ar).
-verb_infinitive(to_study, estudiar, ar).
-verb_infinitive(to_dance, bailar, ar).
-verb_infinitive(to_sing, cantar, ar).
-verb_infinitive(to_cook, cocinar, ar).
-verb_infinitive(to_clean, limpiar, ar).
-verb_infinitive(to_help, ayudar, ar).
-verb_infinitive(to_buy, comprar, ar).
-verb_infinitive(to_play, jugar, ar).    % Note: stem-changing o->ue
-verb_infinitive(to_love, amar, ar).
-verb_infinitive(to_look, mirar, ar).
-verb_infinitive(to_listen, escuchar, ar).
-verb_infinitive(to_call, llamar, ar).
+% =============================================================================
+% REGULAR -AR VERBS
+% =============================================================================
+verb_infinitive(speak, hablar, ar).
+verb_infinitive(talk, hablar, ar).
+verb_infinitive(walk, caminar, ar).
+verb_infinitive(work, trabajar, ar).
+verb_infinitive(study, estudiar, ar).
+verb_infinitive(dance, bailar, ar).
+verb_infinitive(sing, cantar, ar).
+verb_infinitive(cook, cocinar, ar).
+verb_infinitive(clean, limpiar, ar).
+verb_infinitive(help, ayudar, ar).
+verb_infinitive(buy, comprar, ar).
+verb_infinitive(play, jugar, ar).
+verb_infinitive(love, amar, ar).
+verb_infinitive(look, mirar, ar).
+verb_infinitive(listen, escuchar, ar).
+verb_infinitive(call, llamar, ar).
 
-% Regular -er verbs
-verb_infinitive(to_eat, comer, er).
-verb_infinitive(to_drink, beber, er).
-verb_infinitive(to_read, leer, er).
-verb_infinitive(to_run, correr, er).
-verb_infinitive(to_sell, vender, er).
-verb_infinitive(to_learn, aprender, er).
-verb_infinitive(to_understand, comprender, er).
+% =============================================================================
+% REGULAR -ER VERBS
+% =============================================================================
+verb_infinitive(eat, comer, er).
+verb_infinitive(drink, beber, er).
+verb_infinitive(read, leer, er).
+verb_infinitive(run, correr, er).
+verb_infinitive(sell, vender, er).
+verb_infinitive(learn, aprender, er).
+verb_infinitive(understand, comprender, er).
 
-% Regular -ir verbs
-verb_infinitive(to_live, vivir, ir).
-verb_infinitive(to_write, escribir, ir).
-verb_infinitive(to_open, abrir, ir).
-verb_infinitive(to_receive, recibir, ir).
-verb_infinitive(to_decide, decidir, ir).
-
-% Irregular verbs (most common)
-verb_infinitive(to_be, ser, irregular).
-verb_infinitive(to_be_located, estar, irregular).
-verb_infinitive(to_have, tener, irregular).
-verb_infinitive(to_do, hacer, irregular).
-verb_infinitive(to_make, hacer, irregular).
-verb_infinitive(to_go, ir, irregular).
-verb_infinitive(to_say, decir, irregular).
-verb_infinitive(to_see, ver, irregular).
-verb_infinitive(to_give, dar, irregular).
-verb_infinitive(to_know, saber, irregular).
-verb_infinitive(to_want, querer, irregular).
-verb_infinitive(to_come, venir, irregular).
-verb_infinitive(to_be_able, poder, irregular).
+% =============================================================================
+% REGULAR -IR VERBS
+% =============================================================================
+verb_infinitive(live, vivir, ir).
+verb_infinitive(write, escribir, ir).
+verb_infinitive(open, abrir, ir).
+verb_infinitive(receive, recibir, ir).
+verb_infinitive(decide, decidir, ir).
+% =============================================================================
+% IRREGULAR VERBS - INFINITIVES
+% =============================================================================
+verb_infinitive(be, ser, irregular).
+verb_infinitive(have, tener, irregular).
+verb_infinitive(do, hacer, irregular).
+verb_infinitive(make, hacer, irregular).
+verb_infinitive(go, ir, irregular).
+verb_infinitive(say, decir, irregular).
+verb_infinitive(see, ver, irregular).
+verb_infinitive(give, dar, irregular).
+verb_infinitive(know, saber, irregular).
+verb_infinitive(want, querer, irregular).
+verb_infinitive(come, venir, irregular).
 verb_infinitive(can, poder, irregular).
+verb_infinitive(like, gustar, irregular).  % Especial en español
+
+
+% =============================================================================
+% IRREGULAR VERBS - COMMON CONJUGATED FORMS (English)
+% =============================================================================
+% irregular_form(ConjugatedForm, Infinitive, Person, Tense)
+
+% BE (ser/estar)
+irregular_form(am, be, first_singular, present).
+irregular_form(is, be, third_singular, present).
+irregular_form(are, be, second_singular, present).
+irregular_form(are, be, plural, present).
+irregular_form(was, be, first_singular, past).
+irregular_form(was, be, third_singular, past).
+irregular_form(were, be, second_singular, past).
+irregular_form(were, be, plural, past).
+
+% HAVE (tener/haber)
+irregular_form(has, have, third_singular, present).
+irregular_form(had, have, all, past).
+
+% DO (hacer)
+irregular_form(does, do, third_singular, present).
+irregular_form(did, do, all, past).
+
+% GO (ir)
+irregular_form(goes, go, third_singular, present).
+irregular_form(went, go, all, past).
+
+% COME (venir)
+irregular_form(comes, come, third_singular, present).
+irregular_form(came, come, all, past).
+
+% SEE (ver)
+irregular_form(sees, see, third_singular, present).
+irregular_form(saw, see, all, past).
+
+% MAKE (hacer)
+irregular_form(makes, make, third_singular, present).
+irregular_form(made, make, all, past).
+
+% SAY (decir)
+irregular_form(says, say, third_singular, present).
+irregular_form(said, say, all, past).
+
+% GIVE (dar)
+irregular_form(gives, give, third_singular, present).
+irregular_form(gave, give, all, past).
+
+% KNOW (saber)
+irregular_form(knows, know, third_singular, present).
+irregular_form(knew, know, all, past).
+
+% WANT (querer)
+irregular_form(wants, want, third_singular, present).
+irregular_form(wanted, want, all, past).
+
+% CAN (poder)
+irregular_form(can, can, all, present).
+irregular_form(could, can, all, past).
+
+% LIKE (gustar)
+irregular_form(likes, like, third_singular, present).
+irregular_form(liked, like, all, past).
+
+
+% =============================================================================
+% HELPER: Check if word is irregular form
+% =============================================================================
+% is_irregular_verb_form(+Word, -Infinitive, -Person, -Tense)
+is_irregular_verb_form(Word, Infinitive, Person, Tense) :-
+    irregular_form(Word, Infinitive, Person, Tense).
 
 
 % =====================

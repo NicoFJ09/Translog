@@ -95,18 +95,18 @@ extract_components_typed(Tokens, negative, Lang, Components) :-
 extract_subject_typed([Word|Rest], _, [word(Word, pronoun)], Rest) :-
     pronoun(Word, _, _), !.
 
-extract_subject_typed([Art, Noun|Rest], Lang, 
-                     [word(Art, article), word(Noun, noun(Base, Gender, Number))], 
-                     Rest) :-
-    article(Art, _, _, _),
-    % Ingeniería inversa: deducir forma base del sustantivo
-    identify_noun_from_context(Noun, Lang, Base, Gender, Number), !.
-
 extract_subject_typed([Art, Adj, Noun|Rest], Lang,
                      [word(Art, article), word(Adj, adjective), word(Noun, noun(Base, Gender, Number))],
                      Rest) :-
     article(Art, _, _, _),
-    adjective(Adj, _),
+    adjective(Adj, _),  % Verificar que SÍ es adjetivo
+    identify_noun_from_context(Noun, Lang, Base, Gender, Number), !.
+
+% Luego el menos específico (Art + Noun)
+extract_subject_typed([Art, Noun|Rest], Lang, 
+                     [word(Art, article), word(Noun, noun(Base, Gender, Number))], 
+                     Rest) :-
+    article(Art, _, _, _),
     identify_noun_from_context(Noun, Lang, Base, Gender, Number), !.
 
 extract_subject_typed([Quant, Noun|Rest], Lang,
@@ -211,28 +211,31 @@ identify_noun_from_context(Word, _, Word, unknown, unknown).
 % identify_verb_from_context(+Word, +Lang, -Base, -Conjugation)
 % Deduce el infinitivo del verbo
 
+identify_verb_from_context(Word, english, Base, Conjugation) :-
+    is_irregular_verb_form(Word, Base, Person, Tense),
+    Conjugation = irregular(Person, Tense), !.
+
+% SEGUNDO: Buscar como infinitivo directo
 identify_verb_from_context(Word, _, Word, infinitive) :-
-    % Primero intenta búsqueda directa (infinitivo)
     verb_infinitive(Word, _, _), !.
 
+% TERCERO: Quitar -s (tercera persona inglés)
 identify_verb_from_context(Word, english, Base, third_person) :-
-    % Inglés: quitar -s (he likes -> like)
     atom_concat(Base, 's', Word),
     verb_infinitive(Base, _, _), !.
 
+% CUARTO: Quitar -ed (pasado regular inglés)
 identify_verb_from_context(Word, english, Base, past) :-
-    % Inglés: quitar -ed (walked -> walk)
     atom_concat(Base, 'ed', Word),
     verb_infinitive(Base, _, _), !.
 
+% QUINTO: Quitar -ing (gerundio inglés)
 identify_verb_from_context(Word, english, Base, present_participle) :-
-    % Inglés: quitar -ing (walking -> walk)
     atom_concat(Base, 'ing', Word),
     verb_infinitive(Base, _, _), !.
 
+% SEXTO: Español (placeholder - Fabiola)
 identify_verb_from_context(Word, spanish, Base, conjugated) :-
-    % Español: (PLACEHOLDER - esperar a Fabiola)
-    % Por ahora, asumir que puede ser conjugado
     verb_infinitive(Base, _, _),
     atom_concat(Root, _, Base),
     atom_concat(Root, _, Word), !.
