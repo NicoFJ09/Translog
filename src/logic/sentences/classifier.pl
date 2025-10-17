@@ -4,6 +4,14 @@
 
 :- consult('../../database/DB.pl').
 
+
+% Si la oración inicia con un saludo o frase común, sepáralo y clasifica el resto
+classify([First|Rest], classification(mixed, [fixed([First])|OtherComponents])) :-
+    (common_phrase(First, _) ; common_phrase(_, First)),
+    Rest \= [],
+    classify(Rest, classification(Type, OtherComponents)),
+    Type \= phrase, !.
+
 classify(Tokens, classification(Type, Components)) :-
     classify_type(Tokens, Type),
     extract_components(Tokens, Type, Components).

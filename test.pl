@@ -6,6 +6,7 @@
 :- consult('src/logic/sentences/classifier.pl').
 :- consult('src/logic/sentences/structure.pl').
 :- consult('src/logic/sentences/translator.pl').
+:- consult('src/utils/string_utils.pl').
 
 % =============================================================================
 % TESTS - ENGLISH TO SPANISH
@@ -13,47 +14,51 @@
 
 test1 :-
     write('=== TEST 1: Simple Statement EN->ES ==='), nl,
-    Input = [the, cat, is, big, '.'],
-    write('Input: '), write(Input), nl,
-    
+    InputStr = "the cat is big .",
+    string_to_word_list(InputStr, Input),
+    write('Input string: '), write(InputStr), nl,
+    write('Input tokens: '), write(Input), nl,
     classify(Input, Classification),
     write('Classified: '), write(Classification), nl,
-    
     translate(Classification, english, spanish, Output),
     write('Output: '), write(Output), nl, nl.
 
 test2 :-
     write('=== TEST 2: Adjective Reordering EN->ES ==='), nl,
-    Input = [the, big, house, '.'],
-    write('Input: '), write(Input), nl,
-    
+    InputStr = "the big house .",
+    string_to_word_list(InputStr, Input),
+    write('Input string: '), write(InputStr), nl,
+    write('Input tokens: '), write(Input), nl,
     classify(Input, Classification),
     translate(Classification, english, spanish, Output),
     write('Output: '), write(Output), nl, nl.
 
 test3 :-
     write('=== TEST 3: WH-Question EN->ES ==='), nl,
-    Input = [where, is, the, dog, '?'],
-    write('Input: '), write(Input), nl,
-    
+    InputStr = "where is the dog ?",
+    string_to_word_list(InputStr, Input),
+    write('Input string: '), write(InputStr), nl,
+    write('Input tokens: '), write(Input), nl,
     classify(Input, Classification),
     translate(Classification, english, spanish, Output),
     write('Output: '), write(Output), nl, nl.
 
 test4 :-
     write('=== TEST 4: Negative EN->ES ==='), nl,
-    Input = [i, do, not, like, cats, '.'],
-    write('Input: '), write(Input), nl,
-    
+    InputStr = "i do not like cats .",
+    string_to_word_list(InputStr, Input),
+    write('Input string: '), write(InputStr), nl,
+    write('Input tokens: '), write(Input), nl,
     classify(Input, Classification),
     translate(Classification, english, spanish, Output),
     write('Output: '), write(Output), nl, nl.
 
 test5 :-
     write('=== TEST 5: Common Phrase EN->ES ==='), nl,
-    Input = [hello, '!'],
-    write('Input: '), write(Input), nl,
-    
+    InputStr = "hello !",
+    string_to_word_list(InputStr, Input),
+    write('Input string: '), write(InputStr), nl,
+    write('Input tokens: '), write(Input), nl,
     classify(Input, Classification),
     translate(Classification, english, spanish, Output),
     write('Output: '), write(Output), nl, nl.
@@ -64,29 +69,31 @@ test5 :-
 
 test6 :-
     write('=== TEST 6: Spanish to English ==='), nl,
-    Input = [el, gato, grande, '.'],
-    write('Input: '), write(Input), nl,
-    
+    InputStr = "el gato grande .",
+    string_to_word_list(InputStr, Input),
+    write('Input string: '), write(InputStr), nl,
+    write('Input tokens: '), write(Input), nl,
     classify(Input, Classification),
     write('Classified: '), write(Classification), nl,
-    
     translate(Classification, spanish, english, Output),
     write('Output: '), write(Output), nl, nl.
 
 test7 :-
     write('=== TEST 7: Spanish Simple ES->EN ==='), nl,
-    Input = [el, perro, es, grande, '.'],
-    write('Input: '), write(Input), nl,
-    
+    InputStr = "el perro es grande .",
+    string_to_word_list(InputStr, Input),
+    write('Input string: '), write(InputStr), nl,
+    write('Input tokens: '), write(Input), nl,
     classify(Input, Classification),
     translate(Classification, spanish, english, Output),
     write('Output: '), write(Output), nl, nl.
 
 test8 :-
     write('=== TEST 8: Spanish Question ES->EN ==='), nl,
-    Input = ['¿', donde, esta, el, gato, '?'],
-    write('Input: '), write(Input), nl,
-    
+    InputStr = "¿ donde esta el gato ?",
+    string_to_word_list(InputStr, Input),
+    write('Input string: '), write(InputStr), nl,
+    write('Input tokens: '), write(Input), nl,
     classify(Input, Classification),
     translate(Classification, spanish, english, Output),
     write('Output: '), write(Output), nl, nl.
