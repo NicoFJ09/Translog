@@ -114,12 +114,16 @@ noun(love, amor, masculine, singular).
 
 
 % =====================
-% 4. ADJECTIVES (Mostly Literal, Some Need Gender)
+% 4. ADJECTIVES 
 % =====================
-% adjective(English, Spanish) - doesn't change
-% adjective(English, Spanish, Gender) - changes with gender
+% adjective(English, Spanish) - invariable (no gender/number change)
+% adjective(English, Spanish, Gender, Number) - changes with gender/number
+% =====================
 
-% Adjectives that DON'T change with gender
+% -----------------------------------------------------------------------------
+% A) INVARIABLE ADJECTIVES (no cambian con género, pero SÍ con número)
+% -----------------------------------------------------------------------------
+% Singular
 adjective(big, grande).
 adjective(large, grande).
 adjective(happy, feliz).
@@ -130,40 +134,157 @@ adjective(important, importante).
 adjective(intelligent, inteligente).
 adjective(interesting, interesante).
 adjective(young, joven).
+adjective(strong, fuerte).
+adjective(weak, debil).
+adjective(blue, azul).
+adjective(green, verde).
+adjective(orange, naranja).
+adjective(brown, marron).
+adjective(gray, gris).
+adjective(pink, rosa).
 
-% Adjectives that DO change with gender
-adjective(small, pequeno, masculine).
-adjective(small, pequena, feminine).
-adjective(good, bueno, masculine).
-adjective(good, buena, feminine).
-adjective(bad, malo, masculine).
-adjective(bad, mala, feminine).
-adjective(new, nuevo, masculine).
-adjective(new, nueva, feminine).
-adjective(old, viejo, masculine).
-adjective(old, vieja, feminine).
-adjective(beautiful, hermoso, masculine).
-adjective(beautiful, hermosa, feminine).
-adjective(ugly, feo, masculine).
-adjective(ugly, fea, feminine).
-adjective(cold, frio, masculine).
-adjective(cold, fria, feminine).
-adjective(hot, caliente, masculine).
-adjective(hot, caliente, feminine).
-adjective(white, blanco, masculine).
-adjective(white, blanca, feminine).
-adjective(black, negro, masculine).
-adjective(black, negra, feminine).
-adjective(red, rojo, masculine).
-adjective(red, roja, feminine).
-adjective(tall, alto, masculine).
-adjective(tall, alta, feminine).
-adjective(short, bajo, masculine).
-adjective(short, baja, feminine).
-adjective(fast, rapido, masculine).
-adjective(fast, rapida, feminine).
-adjective(slow, lento, masculine).
-adjective(slow, lenta, feminine).
+% Plural (misma traducción inglesa, forma plural española)
+adjective(big, grandes).
+adjective(large, grandes).
+adjective(happy, felices).
+adjective(sad, tristes).
+adjective(difficult, dificiles).
+adjective(easy, faciles).
+adjective(important, importantes).
+adjective(intelligent, inteligentes).
+adjective(interesting, interesantes).
+adjective(young, jovenes).
+adjective(strong, fuertes).
+adjective(weak, debiles).
+adjective(blue, azules).
+adjective(green, verdes).
+adjective(orange, naranjas).
+adjective(brown, marrones).
+adjective(gray, grises).
+adjective(pink, rosas).
+
+% -----------------------------------------------------------------------------
+% B) GENDER/NUMBER VARIANT ADJECTIVES
+% -----------------------------------------------------------------------------
+% Format: adjective(English, Spanish, Gender, Number)
+
+% Size adjectives
+adjective(small, pequeno, masculine, singular).
+adjective(small, pequena, feminine, singular).
+adjective(small, pequenos, masculine, plural).
+adjective(small, pequenas, feminine, plural).
+
+% Quality adjectives
+adjective(good, bueno, masculine, singular).
+adjective(good, buena, feminine, singular).
+adjective(good, buenos, masculine, plural).
+adjective(good, buenas, feminine, plural).
+
+adjective(bad, malo, masculine, singular).
+adjective(bad, mala, feminine, singular).
+adjective(bad, malos, masculine, plural).
+adjective(bad, malas, feminine, plural).
+
+adjective(beautiful, hermoso, masculine, singular).
+adjective(beautiful, hermosa, feminine, singular).
+adjective(beautiful, hermosos, masculine, plural).
+adjective(beautiful, hermosas, feminine, plural).
+
+adjective(pretty, bonito, masculine, singular).
+adjective(pretty, bonita, feminine, singular).
+adjective(pretty, bonitos, masculine, plural).
+adjective(pretty, bonitas, feminine, plural).
+
+adjective(ugly, feo, masculine, singular).
+adjective(ugly, fea, feminine, singular).
+adjective(ugly, feos, masculine, plural).
+adjective(ugly, feas, feminine, plural).
+
+% Age adjectives
+adjective(new, nuevo, masculine, singular).
+adjective(new, nueva, feminine, singular).
+adjective(new, nuevos, masculine, plural).
+adjective(new, nuevas, feminine, plural).
+
+adjective(old, viejo, masculine, singular).
+adjective(old, vieja, feminine, singular).
+adjective(old, viejos, masculine, plural).
+adjective(old, viejas, feminine, plural).
+
+% Color adjectives
+adjective(white, blanco, masculine, singular).
+adjective(white, blanca, feminine, singular).
+adjective(white, blancos, masculine, plural).
+adjective(white, blancas, feminine, plural).
+
+adjective(black, negro, masculine, singular).
+adjective(black, negra, feminine, singular).
+adjective(black, negros, masculine, plural).
+adjective(black, negras, feminine, plural).
+
+adjective(red, rojo, masculine, singular).
+adjective(red, roja, feminine, singular).
+adjective(red, rojos, masculine, plural).
+adjective(red, rojas, feminine, plural).
+
+adjective(yellow, amarillo, masculine, singular).
+adjective(yellow, amarilla, feminine, singular).
+adjective(yellow, amarillos, masculine, plural).
+adjective(yellow, amarillas, feminine, plural).
+
+% Physical characteristics
+adjective(tall, alto, masculine, singular).
+adjective(tall, alta, feminine, singular).
+adjective(tall, altos, masculine, plural).
+adjective(tall, altas, feminine, plural).
+
+adjective(short, bajo, masculine, singular).
+adjective(short, baja, feminine, singular).
+adjective(short, bajos, masculine, plural).
+adjective(short, bajas, feminine, plural).
+
+adjective(fat, gordo, masculine, singular).
+adjective(fat, gorda, feminine, singular).
+adjective(fat, gordos, masculine, plural).
+adjective(fat, gordas, feminine, plural).
+
+adjective(thin, delgado, masculine, singular).
+adjective(thin, delgada, feminine, singular).
+adjective(thin, delgados, masculine, plural).
+adjective(thin, delgadas, feminine, plural).
+
+% Speed adjectives
+adjective(fast, rapido, masculine, singular).
+adjective(fast, rapida, feminine, singular).
+adjective(fast, rapidos, masculine, plural).
+adjective(fast, rapidas, feminine, plural).
+
+adjective(slow, lento, masculine, singular).
+adjective(slow, lenta, feminine, singular).
+adjective(slow, lentos, masculine, plural).
+adjective(slow, lentas, feminine, plural).
+
+% Temperature adjectives
+adjective(hot, caliente, masculine, singular).
+adjective(hot, caliente, feminine, singular).
+adjective(hot, calientes, masculine, plural).
+adjective(hot, calientes, feminine, plural).
+
+adjective(cold, frio, masculine, singular).
+adjective(cold, fria, feminine, singular).
+adjective(cold, frios, masculine, plural).
+adjective(cold, frias, feminine, plural).
+
+% State adjectives
+adjective(clean, limpio, masculine, singular).
+adjective(clean, limpia, feminine, singular).
+adjective(clean, limpios, masculine, plural).
+adjective(clean, limpias, feminine, plural).
+
+adjective(dirty, sucio, masculine, singular).
+adjective(dirty, sucia, feminine, singular).
+adjective(dirty, sucios, masculine, plural).
+adjective(dirty, sucias, feminine, plural).
 
 
 % =====================
