@@ -385,6 +385,39 @@ irregular_form(liked, like, all, past).
 is_irregular_verb_form(Word, Infinitive, Person, Tense) :-
     irregular_form(Word, Infinitive, Person, Tense).
 
+% =============================================================================
+% SPANISH CONJUGATED VERBS HARDCODED FOR NOW
+% =============================================================================
+% spanish_verb(SpanishWord, EnglishInfinitive)
+
+spanish_verb(es, be).
+spanish_verb(esta, be).
+spanish_verb(son, be).
+spanish_verb(estan, be).
+
+% =====================
+% AUXILIARIES
+% =====================
+% auxiliary(Word)
+
+auxiliary(do).
+auxiliary(does).
+auxiliary(did).
+auxiliary(is).
+auxiliary(are).
+auxiliary(was).
+auxiliary(were).
+auxiliary(can).
+auxiliary(will).
+auxiliary(would).
+auxiliary(should).
+auxiliary(could).
+auxiliary(may).
+auxiliary(might).
+auxiliary(must).
+auxiliary(have).
+auxiliary(has).
+auxiliary(had).
 
 % =====================
 % 10. COMMON PHRASES (Literal)
