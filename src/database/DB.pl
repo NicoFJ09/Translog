@@ -442,61 +442,81 @@ verb_infinitive(like, gustar, irregular).  % Especial en español
 
 % BE (ser/estar)
 irregular_form(am, be, first_singular, present).
-irregular_form(is, be, third_singular, present).
 irregular_form(are, be, second_singular, present).
+irregular_form(is, be, third_singular, present).
 irregular_form(are, be, plural, present).
-irregular_form(was, be, first_singular, past).
-irregular_form(was, be, third_singular, past).
-irregular_form(were, be, second_singular, past).
-irregular_form(were, be, plural, past).
 
 % HAVE (tener/haber)
+irregular_form(have, have, first_singular, present).
+irregular_form(have, have, second_singular, present).
 irregular_form(has, have, third_singular, present).
-irregular_form(had, have, all, past).
+irregular_form(have, have, plural, present).
 
 % DO (hacer)
+irregular_form(do, do, first_singular, present).
+irregular_form(do, do, second_singular, present).
 irregular_form(does, do, third_singular, present).
-irregular_form(did, do, all, past).
+irregular_form(do, do, plural, present).
 
 % GO (ir)
+irregular_form(go, go, first_singular, present).
+irregular_form(go, go, second_singular, present).
 irregular_form(goes, go, third_singular, present).
-irregular_form(went, go, all, past).
+irregular_form(go, go, plural, present).
 
 % COME (venir)
+irregular_form(come, come, first_singular, present).
+irregular_form(come, come, second_singular, present).
 irregular_form(comes, come, third_singular, present).
-irregular_form(came, come, all, past).
+irregular_form(come, come, plural, present).
 
 % SEE (ver)
+irregular_form(see, see, first_singular, present).
+irregular_form(see, see, second_singular, present).
 irregular_form(sees, see, third_singular, present).
-irregular_form(saw, see, all, past).
+irregular_form(see, see, plural, present).
 
 % MAKE (hacer)
+irregular_form(make, make, first_singular, present).
+irregular_form(make, make, second_singular, present).
 irregular_form(makes, make, third_singular, present).
-irregular_form(made, make, all, past).
+irregular_form(make, make, plural, present).
 
 % SAY (decir)
+irregular_form(say, say, first_singular, present).
+irregular_form(say, say, second_singular, present).
 irregular_form(says, say, third_singular, present).
-irregular_form(said, say, all, past).
+irregular_form(say, say, plural, present).
 
 % GIVE (dar)
+irregular_form(give, give, first_singular, present).
+irregular_form(give, give, second_singular, present).
 irregular_form(gives, give, third_singular, present).
-irregular_form(gave, give, all, past).
+irregular_form(give, give, plural, present).
 
 % KNOW (saber)
+irregular_form(know, know, first_singular, present).
+irregular_form(know, know, second_singular, present).
 irregular_form(knows, know, third_singular, present).
-irregular_form(knew, know, all, past).
+irregular_form(know, know, plural, present).
 
-% WANT (querer)
+% WANT (querer) - Técnicamente regular, pero incluido por consistencia
+irregular_form(want, want, first_singular, present).
+irregular_form(want, want, second_singular, present).
 irregular_form(wants, want, third_singular, present).
-irregular_form(wanted, want, all, past).
+irregular_form(want, want, plural, present).
 
-% CAN (poder)
-irregular_form(can, can, all, present).
-irregular_form(could, can, all, past).
+% CAN (poder) - Modal verb
+irregular_form(can, can, first_singular, present).
+irregular_form(can, can, second_singular, present).
+irregular_form(can, can, third_singular, present).
+irregular_form(can, can, plural, present).
 
 % LIKE (gustar)
+irregular_form(like, like, first_singular, present).
+irregular_form(like, like, second_singular, present).
 irregular_form(likes, like, third_singular, present).
-irregular_form(liked, like, all, past).
+irregular_form(like, like, plural, present).
 
 
 % =============================================================================

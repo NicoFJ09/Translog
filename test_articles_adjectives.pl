@@ -5,7 +5,7 @@
 % Fecha: 17 de Octubre 2025
 %
 % PROPÓSITO:
-% Validar el funcionamiento del módulo de artículos y adjetivos
+% Validar el funcionamiento del modulo de artículos y adjetivos
 % Prueba concordancia, traducciones y reordenamientos
 % ===============================================
 
@@ -186,7 +186,7 @@ test_suite_traduccion_articulos :-
     test('Traducir: a + casa → una',
          traducir_articulo_en_a_es(a, casa, una)),
     
-    % Español → Inglés (más directo)
+    % Español → Inglés (mas directo)
     test('Traducir: el → the',
          traducir_articulo_es_a_en(el, cat, the)),
     
