@@ -1,8 +1,0 @@
-startH :-
-    write('================================='), nl,
-    write('  This is helpers     '), nl,
-    write('  Starting              '), nl,
-    write('================================='), nl, nl.
-
-% Auto-start when loaded
-:- initialization(startH).

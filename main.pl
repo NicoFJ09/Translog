@@ -11,9 +11,6 @@
 % Load interface (ajusta la ruta si BNF está en otra carpeta)
 % :- consult('src/BNF/user_interface.pl').
 
-% Load utilities
-:- consult('src/utils/helpers.pl').
-
 % Main program entry point
 :- consult('src/BNF/user_interface.pl').
 
