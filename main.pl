@@ -4,9 +4,12 @@
 % TRANSLOG - MAIN ENTRY POINT
 % ===============================================
 
-% Cargar módulos en orden
+% Cargar en orden
 :- consult('src/database/DB.pl').
 :- consult('src/logic/sintagmas.pl').
 :- consult('src/logic/conjugador.pl').
 :- consult('src/logic/traductor.pl').
 :- consult('src/BNF/BNF.pl').
+
+% Iniciar automáticamente
+:- initialization(start).
