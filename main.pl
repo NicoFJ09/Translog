@@ -1,18 +1,12 @@
 :- encoding(utf8).
 
 % ===============================================
-% TRANSLOG MAIN ENTRY POINT
+% TRANSLOG - MAIN ENTRY POINT
 % ===============================================
 
-
-% Load all logic modules
-:- consult('src/logic/logic_loader.pl').
-
-% Load interface (ajusta la ruta si BNF está en otra carpeta)
-% :- consult('src/BNF/user_interface.pl').
-
-% Main program entry point
-:- consult('src/BNF/user_interface.pl').
-
-% Auto-start when loaded
-:- initialization(start).
+% Cargar módulos en orden
+:- consult('DB.pl').
+:- consult('logic/sintagmas.pl').
+:- consult('logic/conjugador.pl').
+:- consult('logic/traductor.pl').
+:- consult('BNF/BNF.pl').
