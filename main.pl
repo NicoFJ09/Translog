@@ -5,8 +5,8 @@
 % ===============================================
 
 % Cargar módulos en orden
-:- consult('DB.pl').
-:- consult('logic/sintagmas.pl').
-:- consult('logic/conjugador.pl').
-:- consult('logic/traductor.pl').
-:- consult('BNF/BNF.pl').
+:- consult('src/database/DB.pl').
+:- consult('src/logic/sintagmas.pl').
+:- consult('src/logic/conjugador.pl').
+:- consult('src/logic/traductor.pl').
+:- consult('src/BNF/BNF.pl').
