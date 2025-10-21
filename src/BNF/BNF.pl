@@ -12,8 +12,13 @@ start :-
     write('2. Inglés → Español'), nl,
     write('3. Salir'), nl, nl,
     write('Opción: '),
-    read(Opcion),
-    procesar_opcion(Opcion).
+    read_line_to_string(user_input, OpcionStr),
+    normalize_space(string(OpcionTrim), OpcionStr),
+    ( number_string(OpcionNum, OpcionTrim) ->
+        procesar_opcion(OpcionNum)
+    ;
+        procesar_opcion(_)
+    ).
 
 procesar_opcion(1) :-
     nl, write('>>> Modo: Español → Inglés <<<'), nl,
@@ -30,13 +35,18 @@ procesar_opcion(_) :-
     nl, write('Opción inválida'), nl, start.
 
 bucle(LangOrigen, LangDestino) :-
-    nl, write('Oración (lista de átomos, o salir):'), nl,
+    nl, write('Escribe la frase a traducir (o "salir" para terminar):'), nl,
     write('> '),
-    read(Input),
-    (Input = salir ->
+    read_line_to_string(user_input, InputStr),
+    ( InputStr = "salir" ->
         start
+    ; InputStr = "" ->
+        bucle(LangOrigen, LangDestino)
     ;
-        traducir_lista(Input, LangOrigen, LangDestino, Traduccion),
-        write('Traducción: '), write(Traduccion), nl,
+        split_string(InputStr, " ", " ", TokensStr),
+        maplist(atom_string, Tokens, TokensStr),
+        traducir_lista(Tokens, LangOrigen, LangDestino, Traduccion),
+        atomic_list_concat(Traduccion, ' ', OracionFinal),
+        write('Traducción: '), write(OracionFinal), nl,
         bucle(LangOrigen, LangDestino)
     ).
