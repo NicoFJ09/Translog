@@ -1,64 +1,94 @@
 :- encoding(utf8).
 :- consult('../database/DB.pl').
 % ===============================================
-% SINTAGMAS.PL - Identificar categorías
+% SINTAGMAS.PL - Identificar categorías y estructuras
 % ===============================================
 
-% Formato: article(English, Spanish, Gender, Number)
-% Solo buscamos en SEGUNDA posición para español
-es_determinante(Palabra, spanish) :- article(_, Palabra, _, _).
-% Solo buscamos en PRIMERA posición para inglés
-es_determinante(Palabra, english) :- article(Palabra, _, _, _).
+% ----------- IDENTIFICACIÓN DE CATEGORÍAS (VOCABULARIO) -----------
 
-% Formato: noun(English, Spanish, Gender, Number)
-es_nombre(Palabra, spanish) :- noun(_, Palabra, _, _).
-es_nombre(Palabra, english) :- noun(Palabra, _, _, _).
-
-% Formato: adjective(English, Spanish, Gender, Number)
-es_adjetivo(Palabra, spanish) :- adjective(_, Palabra, _, _).
-es_adjetivo(Palabra, english) :- adjective(Palabra, _, _, _).
-
-% Formato: pronoun(English, Spanish, Person)
-es_pronombre(Palabra, spanish) :- pronoun(_, Palabra, _).
-es_pronombre(Palabra, english) :- pronoun(Palabra, _, _).
-
-% Formato: verb_infinitive(English, Spanish, Type)
-es_verbo_infinitivo(Palabra, spanish) :- verb_infinitive(_, Palabra, _).
-es_verbo_infinitivo(Palabra, english) :- verb_infinitive(Palabra, _, _).
-
-% Formato: irregular_form(Conjugated, Infinitive, Person, Tense)
-es_verbo_conjugado(Palabra, english) :- irregular_form(Palabra, _, _, present).
-
-% Formato: irregular_form_spanish(Conjugated, Infinitive, Person, Tense)
-es_verbo_conjugado(Palabra, spanish) :- irregular_form_spanish(Palabra, _, _, present).
-
-% Es verbo si es infinitivo O conjugado
+es_determinante(Palabra, Lang) :- (Lang = spanish, article(_, Palabra, _, _)); (Lang = english, article(Palabra, _, _, _)).
+es_nombre(Palabra, Lang) :- (Lang = spanish, noun(_, Palabra, _, _)); (Lang = english, noun(Palabra, _, _, _)).
+es_adjetivo(Palabra, Lang) :- (Lang = spanish, adjective(_, Palabra, _, _)); (Lang = english, adjective(Palabra, _, _, _)).
+es_pronombre(Palabra, Lang) :- (Lang = spanish, pronoun(_, Palabra, _)); (Lang = english, pronoun(Palabra, _, _)).
+es_verbo_infinitivo(Palabra, Lang) :- (Lang = spanish, verb_infinitive(_, Palabra, _)); (Lang = english, verb_infinitive(Palabra, _, _)).
 es_verbo(Palabra, Lang) :- es_verbo_infinitivo(Palabra, Lang).
-es_verbo(Palabra, Lang) :- es_verbo_conjugado(Palabra, Lang).
-
-% Formato: adverb(English, Spanish)
-es_adverbio(Palabra, spanish) :- adverb(_, Palabra).
-es_adverbio(Palabra, english) :- adverb(Palabra, _).
-
-% Formato: preposition(English, Spanish)
-es_preposicion(Palabra, spanish) :- preposition(_, Palabra).
-es_preposicion(Palabra, english) :- preposition(Palabra, _).
-
-% Formato: question_word(English, Spanish)
-es_interrogativa(Palabra, spanish) :- question_word(_, Palabra).
-es_interrogativa(Palabra, english) :- question_word(Palabra, _).
-
-% Formato: negative(English, Spanish)
-es_negacion(Palabra, spanish) :- negative(_, Palabra).
-es_negacion(Palabra, english) :- negative(Palabra, _).
-
-% Formato: common_phrase(English, Spanish)
-es_frase_comun(Palabra, spanish) :- common_phrase(_, Palabra).
-es_frase_comun(Palabra, english) :- common_phrase(Palabra, _).
-
-% Formato: conjunction(English, Spanish)
-es_conjuncion(Palabra, spanish) :- conjunction(_, Palabra).
-es_conjuncion(Palabra, english) :- conjunction(Palabra, _).
-
-% Formato: auxiliary(Word) - solo inglés
+es_adverbio(Palabra, Lang) :- (Lang = spanish, adverb(_, Palabra)); (Lang = english, adverb(Palabra, _)).
+es_preposicion(Palabra, Lang) :- (Lang = spanish, preposition(_, Palabra)); (Lang = english, preposition(Palabra, _)).
+es_interrogativa(Palabra, Lang) :- (Lang = spanish, question_word(_, Palabra)); (Lang = english, question_word(Palabra, _)).
+es_negacion(Palabra, Lang) :- (Lang = spanish, negative(_, Palabra)); (Lang = english, negative(Palabra, _)).
+es_frase_comun(Palabra, Lang) :- (Lang = spanish, common_phrase(_, Palabra)); (Lang = english, common_phrase(Palabra, _)).
+es_conjuncion(Palabra, Lang) :- (Lang = spanish, conjunction(_, Palabra)); (Lang = english, conjunction(Palabra, _)).
 es_auxiliar(Palabra) :- auxiliary(Palabra).
+
+% ----------- CLASIFICADOR DE SINTAGMAS NOMINALES -----------
+
+sintagma_nominal([Art, Nom, Adj], Lang, sn(Art, Nom, Adj)) :-
+    es_determinante(Art, Lang),
+    es_nombre(Nom, Lang),
+    es_adjetivo(Adj, Lang).
+sintagma_nominal([Art, Nom], Lang, sn(Art, Nom, none)) :-
+    es_determinante(Art, Lang),
+    es_nombre(Nom, Lang).
+sintagma_nominal([Nom, Adj], Lang, sn(none, Nom, Adj)) :-
+    es_nombre(Nom, Lang),
+    es_adjetivo(Adj, Lang).
+sintagma_nominal([Nom], Lang, sn(none, Nom, none)) :-
+    es_nombre(Nom, Lang).
+sintagma_nominal([Art, Adj, Nom], english, sn(Art, Nom, Adj)) :-
+    es_determinante(Art, english),
+    es_adjetivo(Adj, english),
+    es_nombre(Nom, english).
+sintagma_nominal([Adj, Nom], english, sn(none, Nom, Adj)) :-
+    es_adjetivo(Adj, english),
+    es_nombre(Nom, english).
+sintagma_nominal([Art], Lang, sn(Art, none, none)) :-
+    es_determinante(Art, Lang).
+sintagma_nominal([Adj], Lang, sn(none, none, Adj)) :-
+    es_adjetivo(Adj, Lang).
+
+% ----------- CLASIFICADOR DE ORACIONES (LISTAS PLANAS, SOLO AFIRMATIVAS) -----------
+
+% SVC: Sujeto + Verbo copulativo + Complemento
+clasificar_oracion(Tokens, Lang, oracion(afirmativa, s_v_c, SujSN, Verbo, none, CompSN, none)) :-
+    append(SujTokens, [Verbo|CompTokens], Tokens),
+    member(Verbo, [ser, estar, parecer, parecerse, resultar, quedar, mantenerse, volverse, convertirse, hacerse]),
+    sintagma_nominal(SujTokens, Lang, SujSN),
+    sintagma_nominal(CompTokens, Lang, CompSN).
+
+% SVO: Sujeto + Verbo + Objeto
+clasificar_oracion(Tokens, Lang, oracion(afirmativa, s_v_o, SujSN, Verbo, ObjSN, none, none)) :-
+    es_verbo(Verbo, Lang),
+    append(SujTokens, [Verbo|ObjTokens], Tokens),
+    sintagma_nominal(SujTokens, Lang, SujSN),
+    sintagma_nominal(ObjTokens, Lang, ObjSN).
+
+% SV: Sujeto + Verbo
+clasificar_oracion(Tokens, Lang, oracion(afirmativa, s_v, SujSN, Verbo, none, none, none)) :-
+    es_verbo(Verbo, Lang),
+    append(SujTokens, [Verbo], Tokens),
+    sintagma_nominal(SujTokens, Lang, SujSN).
+
+% SVO+IO+DO: Sujeto + Verbo + IO + DO
+clasificar_oracion(Tokens, Lang, oracion(afirmativa, s_v_io_do, SujSN, Verbo, IOSN, DOSN, none)) :-
+    es_verbo(Verbo, Lang),
+    append(SujTokens, [Verbo|Rest], Tokens),
+    sintagma_nominal(SujTokens, Lang, SujSN),
+    append(IOTokens, DOTokens, Rest),
+    sintagma_nominal(IOTokens, Lang, IOSN),
+    sintagma_nominal(DOTokens, Lang, DOSN).
+
+% SVO+C: Sujeto + Verbo + Objeto + Complemento
+clasificar_oracion(Tokens, Lang, oracion(afirmativa, s_v_o_c, SujSN, Verbo, ObjSN, CompSN, none)) :-
+    es_verbo(Verbo, Lang),
+    append(SujTokens, [Verbo|Rest], Tokens),
+    sintagma_nominal(SujTokens, Lang, SujSN),
+    append(ObjTokens, CompTokens, Rest),
+    sintagma_nominal(ObjTokens, Lang, ObjSN),
+    sintagma_nominal(CompTokens, Lang, CompSN).
+
+% Sintagma nominal plano
+clasificar_oracion(Tokens, Lang, sn(Art, Nom, Adj)) :-
+    sintagma_nominal(Tokens, Lang, sn(Art, Nom, Adj)).
+
+% Si no se reconoce, marcar como desconocida
+clasificar_oracion(_, _, desconocida).

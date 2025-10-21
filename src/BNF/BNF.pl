@@ -45,8 +45,14 @@ bucle(LangOrigen, LangDestino) :-
     ;
         split_string(InputStr, " ", " ", TokensStr),
         maplist(atom_string, Tokens, TokensStr),
-        traducir_lista(Tokens, LangOrigen, LangDestino, Traduccion),
-        atomic_list_concat(Traduccion, ' ', OracionFinal),
-        write('Traducción: '), write(OracionFinal), nl,
+        traducir_oracion(Tokens, LangOrigen, LangDestino, Traduccion),
+        ( Traduccion = ['[estructura desconocida]'] ->
+            write('No se pudo reconocer la estructura.'), nl
+        ; Traduccion = ['[sintagma nominal]'] ->
+            write('Sintagma nominal detectado pero no se pudo traducir.'), nl
+        ;
+            atomic_list_concat(Traduccion, ' ', OracionFinal),
+            write('Traducción: '), write(OracionFinal), nl
+        ),
         bucle(LangOrigen, LangDestino)
     ).

@@ -147,6 +147,7 @@ verb_infinitive(study, estudiar, ar).
 verb_infinitive(play, jugar, ar).
 verb_infinitive(love, amar, ar).
 verb_infinitive(help, ayudar, ar).
+verb_infinitive(give, dar, ar).
 verb_infinitive(buy, comprar, ar).
 verb_infinitive(call, llamar, ar).
 
@@ -162,6 +163,7 @@ verb_infinitive(learn, aprender, er).
 verb_infinitive(live, vivir, ir).
 verb_infinitive(write, escribir, ir).
 verb_infinitive(open, abrir, ir).
+verb_infinitive(sleep, dormir, ir).
 
 % =============================================================================
 % 6. VERBS - IRREGULAR (ENGLISH)
