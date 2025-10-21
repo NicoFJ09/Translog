@@ -58,10 +58,15 @@ noun(friends, amigos, masculine, plural).
 
 % Things
 noun(house, casa, feminine, singular).
+noun(houses, casas, feminine, plural).
 noun(car, coche, masculine, singular).
+noun(cars, coches, masculine, plural).
 noun(book, libro, masculine, singular).
+noun(books, libros, masculine, plural).
 noun(table, mesa, feminine, singular).
+noun(tables, mesas, feminine, plural).
 noun(chair, silla, feminine, singular).
+noun(chairs, sillas, feminine, plural).
 
 % Food
 noun(food, comida, feminine, singular).
@@ -85,15 +90,41 @@ noun(life, vida, feminine, singular).
 % =============================================================================
 % adjective(English, Spanish, Gender, Number)
 
-% Invariable (same form for masculine/feminine)
-adjective(big, grande, _, singular).
-adjective(big, grandes, _, plural).
-adjective(happy, feliz, _, singular).
-adjective(sad, triste, _, singular).
-adjective(easy, facil, _, singular).
-adjective(difficult, dificil, _, singular).
-adjective(important, importante, _, singular).
-adjective(intelligent, inteligente, _, singular).
+% Invariable (same form for masculine/feminine) - duplicated for both genders
+adjective(big, grande, masculine, singular).
+adjective(big, grande, feminine, singular).
+adjective(big, grandes, masculine, plural).
+adjective(big, grandes, feminine, plural).
+
+adjective(happy, feliz, masculine, singular).
+adjective(happy, feliz, feminine, singular).
+adjective(happy, felices, masculine, plural).
+adjective(happy, felices, feminine, plural).
+
+adjective(sad, triste, masculine, singular).
+adjective(sad, triste, feminine, singular).
+adjective(sad, tristes, masculine, plural).
+adjective(sad, tristes, feminine, plural).
+
+adjective(easy, facil, masculine, singular).
+adjective(easy, facil, feminine, singular).
+adjective(easy, faciles, masculine, plural).
+adjective(easy, faciles, feminine, plural).
+
+adjective(difficult, dificil, masculine, singular).
+adjective(difficult, dificil, feminine, singular).
+adjective(difficult, dificiles, masculine, plural).
+adjective(difficult, dificiles, feminine, plural).
+
+adjective(important, importante, masculine, singular).
+adjective(important, importante, feminine, singular).
+adjective(important, importantes, masculine, plural).
+adjective(important, importantes, feminine, plural).
+
+adjective(intelligent, inteligente, masculine, singular).
+adjective(intelligent, inteligente, feminine, singular).
+adjective(intelligent, inteligentes, masculine, plural).
+adjective(intelligent, inteligentes, feminine, plural).
 
 % Variable (change with gender)
 adjective(small, pequeno, masculine, singular).
