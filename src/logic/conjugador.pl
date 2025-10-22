@@ -109,7 +109,7 @@ aplicar_regla_regular_ingles(Infinitivo, Pronombre, Infinitivo) :-
 % Extraer raíz quitando terminación
 termina_en(Palabra, Sufijo, Raiz) :-
     atom_concat(Raiz, Sufijo, Palabra).
-
+    
 % Mapear pronombres ingleses a categorías
 pronombre_a_categoria(i, first_singular).
 pronombre_a_categoria(you, second_singular).
@@ -136,3 +136,95 @@ agregar_s(Infinitivo, Conjugado) :-
 % Verificar si termina en s u o
 termina_en_s_o(Palabra) :-
     (termina_en(Palabra, s, _) ; termina_en(Palabra, o, _)).
+
+% =============================================================================
+% IDENTIFICAR INFINITIVO (inverso)
+% =============================================================================
+
+% Identificar infinitivo español: comprobar irregulares primero
+identificar_infinitivo_espanol(VerbConjugado, Infinitivo, Persona) :-
+    irregular_form_spanish(VerbConjugado, Infinitivo, Persona, present), !.
+
+% Verbos -AR
+identificar_infinitivo_espanol(VerbConjugado, Infinitivo, yo) :-
+    atom_concat(Raiz, o, VerbConjugado), atom_concat(Raiz, ar, Infinitivo), verb_infinitive(_, Infinitivo, ar), !.
+
+identificar_infinitivo_espanol(VerbConjugado, Infinitivo, tu) :-
+    atom_concat(Raiz, as, VerbConjugado), atom_concat(Raiz, ar, Infinitivo), verb_infinitive(_, Infinitivo, ar), !.
+
+identificar_infinitivo_espanol(VerbConjugado, Infinitivo, el) :-
+    atom_concat(Raiz, a, VerbConjugado), atom_concat(Raiz, ar, Infinitivo), verb_infinitive(_, Infinitivo, ar), !.
+
+identificar_infinitivo_espanol(VerbConjugado, Infinitivo, nosotros) :-
+    atom_concat(Raiz, amos, VerbConjugado), atom_concat(Raiz, ar, Infinitivo), verb_infinitive(_, Infinitivo, ar), !.
+
+identificar_infinitivo_espanol(VerbConjugado, Infinitivo, ellos) :-
+    atom_concat(Raiz, an, VerbConjugado), atom_concat(Raiz, ar, Infinitivo), verb_infinitive(_, Infinitivo, ar), !.
+
+% Verbos -ER
+identificar_infinitivo_espanol(VerbConjugado, Infinitivo, yo) :-
+    atom_concat(Raiz, o, VerbConjugado), atom_concat(Raiz, er, Infinitivo), verb_infinitive(_, Infinitivo, er), !.
+
+identificar_infinitivo_espanol(VerbConjugado, Infinitivo, tu) :-
+    atom_concat(Raiz, es, VerbConjugado), atom_concat(Raiz, er, Infinitivo), verb_infinitive(_, Infinitivo, er), !.
+
+identificar_infinitivo_espanol(VerbConjugado, Infinitivo, el) :-
+    atom_concat(Raiz, e, VerbConjugado), atom_concat(Raiz, er, Infinitivo), verb_infinitive(_, Infinitivo, er), !.
+
+identificar_infinitivo_espanol(VerbConjugado, Infinitivo, nosotros) :-
+    atom_concat(Raiz, emos, VerbConjugado), atom_concat(Raiz, er, Infinitivo), verb_infinitive(_, Infinitivo, er), !.
+
+identificar_infinitivo_espanol(VerbConjugado, Infinitivo, ellos) :-
+    atom_concat(Raiz, en, VerbConjugado), atom_concat(Raiz, er, Infinitivo), verb_infinitive(_, Infinitivo, er), !.
+
+% Verbos -IR
+identificar_infinitivo_espanol(VerbConjugado, Infinitivo, yo) :-
+    atom_concat(Raiz, o, VerbConjugado), atom_concat(Raiz, ir, Infinitivo), verb_infinitive(_, Infinitivo, ir), !.
+
+identificar_infinitivo_espanol(VerbConjugado, Infinitivo, tu) :-
+    atom_concat(Raiz, es, VerbConjugado), atom_concat(Raiz, ir, Infinitivo), verb_infinitive(_, Infinitivo, ir), !.
+
+identificar_infinitivo_espanol(VerbConjugado, Infinitivo, el) :-
+    atom_concat(Raiz, e, VerbConjugado), atom_concat(Raiz, ir, Infinitivo), verb_infinitive(_, Infinitivo, ir), !.
+
+identificar_infinitivo_espanol(VerbConjugado, Infinitivo, nosotros) :-
+    atom_concat(Raiz, imos, VerbConjugado), atom_concat(Raiz, ir, Infinitivo), verb_infinitive(_, Infinitivo, ir), !.
+
+identificar_infinitivo_espanol(VerbConjugado, Infinitivo, ellos) :-
+    atom_concat(Raiz, en, VerbConjugado), atom_concat(Raiz, ir, Infinitivo), verb_infinitive(_, Infinitivo, ir), !.
+
+% -----------------------------
+% Identificar infinitivo inglés
+% comprobar irregulares primero (usa categorías en DB)
+identificar_infinitivo_ingles(VerbConjugado, Infinitivo, Persona) :-
+    irregular_form(VerbConjugado, Infinitivo, Categoria, present),
+    categoria_a_pronombre(Categoria, Persona), !.
+
+% termina en -ies -> raiz + y
+identificar_infinitivo_ingles(VerbConjugado, Infinitivo, he) :-
+    atom_concat(Raiz, ies, VerbConjugado), atom_concat(Raiz, y, Infinitivo), verb_infinitive(Infinitivo, _, _), !.
+
+% termina en -es para casos especiales (s, sh, ch, x, o)
+identificar_infinitivo_ingles(VerbConjugado, Infinitivo, he) :-
+    atom_concat(Infinitivo, es, VerbConjugado),
+    ( termina_en(Infinitivo, s, _)
+    ; termina_en(Infinitivo, sh, _)
+    ; termina_en(Infinitivo, ch, _)
+    ; termina_en(Infinitivo, x, _)
+    ; termina_en(Infinitivo, o, _)
+    ),
+    verb_infinitive(Infinitivo, _, _), !.
+
+% termina en -s (caso general)
+identificar_infinitivo_ingles(VerbConjugado, Infinitivo, he) :-
+    atom_concat(Infinitivo, s, VerbConjugado), verb_infinitive(Infinitivo, _, _), !.
+
+% Si ya es infinitivo (no 3ª pers.), devolver como I
+identificar_infinitivo_ingles(Infinitivo, Infinitivo, i) :-
+    verb_infinitive(Infinitivo, _, _).
+
+% Mapeo inverso de categorías a pronombres (simple representante)
+categoria_a_pronombre(first_singular, i).
+categoria_a_pronombre(second_singular, you).
+categoria_a_pronombre(third_singular, he).
+categoria_a_pronombre(plural, they).
