@@ -1,8 +1,6 @@
 :- encoding(utf8).
 :- consult('../database/DB.pl').
-% ===============================================
-% TRADUCTOR.PL - Traducción unidireccional
-% ===============================================
+:- consult('./conjugador.pl').
 
 % =============================================================================
 % TRADUCIR UNA PALABRA
@@ -10,74 +8,128 @@
 
 % ESPAÑOL → INGLÉS: buscar en posición 2 → retornar posición 1
 traducir_palabra(Palabra, spanish, english, Traduccion) :-
-    pronoun(Traduccion, Palabra, _).
+    pronoun(Traduccion, Palabra, _), !.
 
 traducir_palabra(Palabra, spanish, english, Traduccion) :-
-    article(Traduccion, Palabra, _, _).
+    article(Traduccion, Palabra, _, _), !.
 
 traducir_palabra(Palabra, spanish, english, Traduccion) :-
-    noun(Traduccion, Palabra, _, _).
+    noun(Traduccion, Palabra, _, _), !.
 
 traducir_palabra(Palabra, spanish, english, Traduccion) :-
-    adjective(Traduccion, Palabra, _, _).
+    adjective(Traduccion, Palabra, _, _), !.
 
 traducir_palabra(Palabra, spanish, english, Traduccion) :-
-    verb_infinitive(Traduccion, Palabra, _).
+    traducir_verbo(Palabra, spanish, english, Traduccion), !.
 
 traducir_palabra(Palabra, spanish, english, Traduccion) :-
-    adverb(Traduccion, Palabra).
+    adverb(Traduccion, Palabra), !.
 
 traducir_palabra(Palabra, spanish, english, Traduccion) :-
-    preposition(Traduccion, Palabra).
+    preposition(Traduccion, Palabra), !.
 
 traducir_palabra(Palabra, spanish, english, Traduccion) :-
-    question_word(Traduccion, Palabra).
+    question_word(Traduccion, Palabra), !.
 
 traducir_palabra(Palabra, spanish, english, Traduccion) :-
-    negative(Traduccion, Palabra).
+    negative(Traduccion, Palabra), !.
 
 traducir_palabra(Palabra, spanish, english, Traduccion) :-
-    common_phrase(Traduccion, Palabra).
+    common_phrase(Traduccion, Palabra), !.
 
 traducir_palabra(Palabra, spanish, english, Traduccion) :-
-    conjunction(Traduccion, Palabra).
+    conjunction(Traduccion, Palabra), !.
 
 % INGLÉS → ESPAÑOL: buscar en posición 1 → retornar posición 2
 traducir_palabra(Palabra, english, spanish, Traduccion) :-
-    pronoun(Palabra, Traduccion, _).
+    pronoun(Palabra, Traduccion, _), !.
 
 traducir_palabra(Palabra, english, spanish, Traduccion) :-
-    article(Palabra, Traduccion, _, _).
+    article(Palabra, Traduccion, _, _), !.
 
 traducir_palabra(Palabra, english, spanish, Traduccion) :-
-    noun(Palabra, Traduccion, _, _).
+    noun(Palabra, Traduccion, _, _), !.
 
 traducir_palabra(Palabra, english, spanish, Traduccion) :-
-    adjective(Palabra, Traduccion, _, _).
+    adjective(Palabra, Traduccion, _, _), !.
 
 traducir_palabra(Palabra, english, spanish, Traduccion) :-
-    verb_infinitive(Palabra, Traduccion, _).
+    traducir_verbo(Palabra, english, spanish, Traduccion), !.
 
 traducir_palabra(Palabra, english, spanish, Traduccion) :-
-    adverb(Palabra, Traduccion).
+    adverb(Palabra, Traduccion), !.
 
 traducir_palabra(Palabra, english, spanish, Traduccion) :-
-    preposition(Palabra, Traduccion).
+    preposition(Palabra, Traduccion), !.
 
 traducir_palabra(Palabra, english, spanish, Traduccion) :-
-    question_word(Palabra, Traduccion).
+    question_word(Palabra, Traduccion), !.
 
 traducir_palabra(Palabra, english, spanish, Traduccion) :-
-    negative(Palabra, Traduccion).
+    negative(Palabra, Traduccion), !.
 
 traducir_palabra(Palabra, english, spanish, Traduccion) :-
-    common_phrase(Palabra, Traduccion).
+    common_phrase(Palabra, Traduccion), !.
 
 traducir_palabra(Palabra, english, spanish, Traduccion) :-
-    conjunction(Palabra, Traduccion).
-
+    conjunction(Palabra, Traduccion), !.
+    
 % Si no hay traducción, dejar igual
 traducir_palabra(Palabra, _, _, Palabra).
+
+% =============================================================================
+% TRADUCIR VERBO
+% =============================================================================
+
+traducir_verbo(PalabraEspanol, spanish, english, Traduccion) :-
+    base_espanol(PalabraEspanol, InfinitivoEspanol, Persona),
+    traducir_infinitivo(InfinitivoEspanol, spanish, english, InfinitivoIngles),
+    mapear_persona(Persona, spanish, english, Pronombre),
+    conjugar_ingles(InfinitivoIngles, Pronombre, Traduccion).
+
+traducir_verbo(PalabraIngles, english, spanish, Traduccion) :-
+    base_ingles(PalabraIngles, InfinitivoIngles, Pronombre),
+    traducir_infinitivo(InfinitivoIngles, english, spanish, InfinitivoEspanol),
+    mapear_persona(Pronombre, english, spanish, Persona),
+    conjugar_espanol(InfinitivoEspanol, Persona, Traduccion).
+
+% =============================================================================
+% TRADUCIR INFINITIVO
+% =============================================================================
+
+traducir_infinitivo(Infinitivo, spanish, english, Traduccion) :-
+    (   mapeo_irregular_espanol_ingles(Infinitivo, Traduccion)
+    ;   verb_infinitive(Traduccion, Infinitivo, _)
+    ), !.
+
+traducir_infinitivo(Infinitivo, english, spanish, Traduccion) :-
+    (   mapeo_irregular_ingles_espanol(Infinitivo, Traduccion)
+    ;   verb_infinitive(Infinitivo, Traduccion, _)
+    ), !.
+
+% =============================================================================
+% MAPEO DE IRREGULARES (usando DB.pl)
+% =============================================================================
+
+% Obtener el infinitivo inglés de un irregular español
+mapeo_irregular_espanol_ingles(InfinitivoEspanol, InfinitivoIngles) :-
+    irregular_verb_pair(InfinitivoEspanol, InfinitivoIngles).
+
+% Obtener el infinitivo español de un irregular inglés
+mapeo_irregular_ingles_espanol(InfinitivoIngles, InfinitivoEspanol) :-
+    irregular_verb_pair(InfinitivoEspanol, InfinitivoIngles).
+
+% =============================================================================
+% MAPEO DE PERSONAS con pronombres - para los verbos 
+% =============================================================================
+
+% Mapear persona de español a pronombre en inglés
+mapear_persona(PersonaEspanol, spanish, english, PronombreIngles) :-
+    pronoun(PronombreIngles, PersonaEspanol, _).
+
+% Mapear pronombre en ingles inglés a persona en español 
+    mapear_persona(PronombreIngles, english, spanish, PersonaEspanol) :-
+        pronoun(PronombreIngles, PersonaEspanol, _).
 
 % =============================================================================
 % TRADUCIR LISTA

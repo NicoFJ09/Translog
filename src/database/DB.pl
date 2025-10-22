@@ -264,6 +264,17 @@ irregular_form_spanish(hacemos, hacer, nosotros, present).
 irregular_form_spanish(hacen, hacer, ellos, present).
 
 % =============================================================================
+% 7.1 IRREGULAR VERB PAIRS (Spanish-English equivalences)(things that may cause confusion)
+% =============================================================================
+% irregular_verb_pair(Spanish_Infinitive, English_Infinitive)
+
+irregular_verb_pair(ser, be).
+irregular_verb_pair(estar, be).
+irregular_verb_pair(ir, go).
+irregular_verb_pair(tener, have).
+irregular_verb_pair(hacer, do).
+
+% =============================================================================
 % 8. OTHER WORD CLASSES
 % =============================================================================
 
