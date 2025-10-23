@@ -1,5 +1,6 @@
 :- encoding(utf8).
 :- consult('../logic/traductor.pl').
+:- consult('../BNF/numeros.pl').
 % ===============================================
 % BNF.PL - Interfaz
 % ===============================================
@@ -34,6 +35,46 @@ procesar_opcion(3) :-
 procesar_opcion(_) :-
     nl, write('Opción inválida'), nl, start.
 
+% Pasar input a lista de strings
+string_to_word_list(String, WordList) :-
+    string_lower(String, LowerCase),
+    remove_accents(LowerCase, NoAccents),
+    split_string(NoAccents, " ", " \t\n", Parts),  % separa por espacios
+    maplist(split_punctuation, Parts, NestedTokens),
+    flatten(NestedTokens, FlatTokens),
+    maplist(atom_string, WordList, FlatTokens).
+
+% Separar puntuacion
+split_punctuation(Word, Tokens) :-
+    string_chars(Word, Chars),
+    (   append(WordChars, [Last], Chars),
+        member(Last, ['.', ',', '?', '!', ';', ':'])
+    ->  string_chars(Stem, WordChars),
+        Tokens = [Stem, Last]
+    ;   Tokens = [Word]
+    ).
+
+% Eliminar tildes
+remove_accents(Str, Clean) :-
+    string_chars(Str, Chars),
+    maplist(replace_accent, Chars, CleanChars),
+    string_chars(Clean, CleanChars).
+
+replace_accent('á','a').
+replace_accent('é','e').
+replace_accent('í','i').
+replace_accent('ó','o').
+replace_accent('ú','u').
+replace_accent('ñ','n').
+replace_accent('Á','a').
+replace_accent('É','e').
+replace_accent('Í','i').
+replace_accent('Ó','o').
+replace_accent('Ú','u').
+replace_accent('Ñ','n').
+replace_accent(C,C).
+
+
 bucle(LangOrigen, LangDestino) :-
     nl, write('Escribe la frase a traducir (o "salir" para terminar):'), nl,
     write('> '),
@@ -43,9 +84,10 @@ bucle(LangOrigen, LangDestino) :-
     ; InputStr = "" ->
         bucle(LangOrigen, LangDestino)
     ;
-        split_string(InputStr, " ", " ", TokensStr),
-        maplist(atom_string, Tokens, TokensStr),
-        traducir_oracion(Tokens, LangOrigen, LangDestino, Traduccion),
+        string_lower(InputStr, StringLower),
+        string_to_word_list(StringLower, Input),
+        preprocesar(LangOrigen, Input, Preprocesado),
+        traducir_oracion(Preprocesado, LangOrigen, LangDestino, Traduccion),
         atomic_list_concat(Traduccion, ' ', OracionFinal),
         write('Traducción: '), write(OracionFinal), nl,
         bucle(LangOrigen, LangDestino)

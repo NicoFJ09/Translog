@@ -43,6 +43,9 @@ traducir_palabra(Palabra, spanish, english, Traduccion) :-
 traducir_palabra(Palabra, spanish, english, Traduccion) :-
     conjunction(Traduccion, Palabra), !.
 
+traducir_palabra(Palabra, spanish, english, Traduccion) :-
+    number_word(Traduccion, Palabra), !.
+
 % INGLÉS → ESPAÑOL: buscar en posición 1 → retornar posición 2
 traducir_palabra(Palabra, english, spanish, Traduccion) :-
     possessive_adjective(Palabra, Traduccion, _), !.
@@ -79,6 +82,9 @@ traducir_palabra(Palabra, english, spanish, Traduccion) :-
 
 traducir_palabra(Palabra, english, spanish, Traduccion) :-
     conjunction(Palabra, Traduccion), !.
+
+traducir_palabra(Palabra, english, spanish, Traduccion) :-
+    number_word(Palabra, Traduccion), !.
     
 % Si no hay traducción, dejar igual
 traducir_palabra(Palabra, _, _, Palabra).
