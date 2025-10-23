@@ -7,9 +7,11 @@
 % =============================================================================
 
 % ESPAÑOL → INGLÉS: buscar en posición 2 → retornar posición 1
-% IMPORTANTE: Artículo ANTES de pronombre para evitar "el" artículo → "he" 
 traducir_palabra(Palabra, spanish, english, Traduccion) :-
     article(Traduccion, Palabra, _, _), !.
+
+traducir_palabra(Palabra, spanish, english, Traduccion) :-
+    possessive_adjective(Traduccion, Palabra, _), !.
 
 traducir_palabra(Palabra, spanish, english, Traduccion) :-
     pronoun(Traduccion, Palabra, _), !.
@@ -42,6 +44,9 @@ traducir_palabra(Palabra, spanish, english, Traduccion) :-
     conjunction(Traduccion, Palabra), !.
 
 % INGLÉS → ESPAÑOL: buscar en posición 1 → retornar posición 2
+traducir_palabra(Palabra, english, spanish, Traduccion) :-
+    possessive_adjective(Palabra, Traduccion, _), !.
+
 traducir_palabra(Palabra, english, spanish, Traduccion) :-
     pronoun(Palabra, Traduccion, _), !.
 
@@ -141,6 +146,75 @@ traducir_lista([], _, _, []).
 traducir_lista([Palabra|Resto], LangOrigen, LangDestino, [Traducida|RestoTraducido]) :-
     traducir_palabra(Palabra, LangOrigen, LangDestino, Traducida),
     traducir_lista(Resto, LangOrigen, LangDestino, RestoTraducido).
+
+% Traducir palabra sin buscar question_word 
+traducir_palabra_sin_interrogativa(Palabra, spanish, english, Traduccion) :-
+    article(Traduccion, Palabra, _, _), !.
+
+traducir_palabra_sin_interrogativa(Palabra, spanish, english, Traduccion) :-
+    possessive_adjective(Traduccion, Palabra, _), !.
+
+traducir_palabra_sin_interrogativa(Palabra, spanish, english, Traduccion) :-
+    pronoun(Traduccion, Palabra, _), !.
+
+traducir_palabra_sin_interrogativa(Palabra, spanish, english, Traduccion) :-
+    noun(Traduccion, Palabra, _, _), !.
+
+traducir_palabra_sin_interrogativa(Palabra, spanish, english, Traduccion) :-
+    adjective(Traduccion, Palabra, _, _), !.
+
+traducir_palabra_sin_interrogativa(Palabra, spanish, english, Traduccion) :-
+    traducir_verbo(Palabra, spanish, english, Traduccion), !.
+
+traducir_palabra_sin_interrogativa(Palabra, spanish, english, Traduccion) :-
+    adverb(Traduccion, Palabra), !.
+
+traducir_palabra_sin_interrogativa(Palabra, spanish, english, Traduccion) :-
+    preposition(Traduccion, Palabra), !.
+
+traducir_palabra_sin_interrogativa(Palabra, spanish, english, Traduccion) :-
+    negative(Traduccion, Palabra), !.
+
+traducir_palabra_sin_interrogativa(Palabra, spanish, english, Traduccion) :-
+    common_phrase(Traduccion, Palabra), !.
+
+traducir_palabra_sin_interrogativa(Palabra, spanish, english, Traduccion) :-
+    conjunction(Traduccion, Palabra), !.
+
+traducir_palabra_sin_interrogativa(Palabra, english, spanish, Traduccion) :-
+    possessive_adjective(Palabra, Traduccion, _), !.
+
+traducir_palabra_sin_interrogativa(Palabra, english, spanish, Traduccion) :-
+    pronoun(Palabra, Traduccion, _), !.
+
+traducir_palabra_sin_interrogativa(Palabra, english, spanish, Traduccion) :-
+    article(Palabra, Traduccion, _, _), !.
+
+traducir_palabra_sin_interrogativa(Palabra, english, spanish, Traduccion) :-
+    noun(Palabra, Traduccion, _, _), !.
+
+traducir_palabra_sin_interrogativa(Palabra, english, spanish, Traduccion) :-
+    adjective(Palabra, Traduccion, _, _), !.
+
+traducir_palabra_sin_interrogativa(Palabra, english, spanish, Traduccion) :-
+    traducir_verbo(Palabra, english, spanish, Traduccion), !.
+
+traducir_palabra_sin_interrogativa(Palabra, english, spanish, Traduccion) :-
+    adverb(Palabra, Traduccion), !.
+
+traducir_palabra_sin_interrogativa(Palabra, english, spanish, Traduccion) :-
+    preposition(Palabra, Traduccion), !.
+
+traducir_palabra_sin_interrogativa(Palabra, english, spanish, Traduccion) :-
+    negative(Palabra, Traduccion), !.
+
+traducir_palabra_sin_interrogativa(Palabra, english, spanish, Traduccion) :-
+    common_phrase(Palabra, Traduccion), !.
+
+traducir_palabra_sin_interrogativa(Palabra, english, spanish, Traduccion) :-
+    conjunction(Palabra, Traduccion), !.
+
+traducir_palabra_sin_interrogativa(Palabra, _, _, Palabra).
 
 % =============================================================================
 % TRADUCIR LISTA CON CONTEXTO (para resolver ambigüedades)
@@ -332,6 +406,12 @@ reordenar_sn([Pronombre], _, _, [Pronombre]).
 % TRADUCCIÓN INTELIGENTE DE ORACIONES
 % =============================================================================
 
+% Detectar y traducir oraciones interrogativas PRIMERO
+traducir_oracion(Tokens, LangOrigen, LangDestino, Traduccion) :-
+    detectar_interrogativa(Tokens, LangOrigen),
+    !,
+    reordenar_interrogativa(Tokens, LangOrigen, LangDestino, Traduccion).
+
 % Punto de entrada principal: traducir una oración completa
 traducir_oracion(Tokens, LangOrigen, LangDestino, Traduccion) :-
     detectar_y_traducir_sn_verbo(Tokens, LangOrigen, LangDestino, Traduccion), !.
@@ -503,3 +583,246 @@ es_verbo_token(Palabra, english) :-
     (verb_infinitive(Palabra, _, _) ; 
      irregular_form(Palabra, _, _, present) ;
      base_ingles(Palabra, _, _)).  % Reconocer verbos conjugados regulares
+
+% =============================================================================
+% REGLAS DE ORDEN PARA ORACIONES INTERROGATIVAS
+% =============================================================================
+
+% --- INGLÉS → ESPAÑOL ---
+% Patrón: [Question_Word, Auxiliary, Subject, Verb, ...] → [Question_Word, Verb, Subject, ...]
+
+% Interrogativa con palabra interrogativa + auxiliar DO/DOES
+% Ejemplo: "What do you eat?" → "¿Qué comes?"
+reordenar_interrogativa([QWord, Aux, Sujeto | Resto], english, spanish, OracionReordenada) :-
+    question_word(QWord, QWordEs),
+    es_auxiliar_do(Aux),
+    pronoun(Sujeto, SujetoEs, Categoria),
+    Resto = [Verbo | RestoOracion],
+    verb_infinitive(Verbo, VerboEs, _),
+    % Conjugar verbo en español según persona
+    persona_de_categoria(Categoria, PersonaEs),
+    conjugar_espanol(VerboEs, PersonaEs, VerboConjugadoEs),
+    % Traducir el resto
+    traducir_lista(RestoOracion, english, spanish, RestoTraducido),
+    % Orden español: QWord + Verbo + Sujeto + Resto
+    append([QWordEs, VerboConjugadoEs, SujetoEs], RestoTraducido, OracionReordenada).
+
+% Interrogativa con palabra interrogativa + verbo BE
+% Ejemplo: "Where is he?" → "¿Dónde está él?"
+reordenar_interrogativa([QWord, Verbo, Sujeto | Resto], english, spanish, OracionReordenada) :-
+    question_word(QWord, QWordEs),
+    es_verbo_be(Verbo),
+    pronoun(Sujeto, SujetoEs, Categoria),
+    % Usar traducción del verbo BE según contexto
+    traducir_verbo_be_segun_persona(Verbo, Categoria, VerboEs),
+    traducir_lista(Resto, english, spanish, RestoTraducido),
+    % Orden español: QWord + Verbo + Sujeto + Resto
+    append([QWordEs, VerboEs, SujetoEs], RestoTraducido, OracionReordenada).
+
+% Interrogativa simple con auxiliar DO/DOES (yes/no question)
+% Ejemplo: "Do you eat?" → "¿Comes?"
+% Ejemplo: "Does she work?" → "¿Trabaja ella?"
+reordenar_interrogativa([Aux, Sujeto, Verbo | Resto], english, spanish, OracionReordenada) :-
+    es_auxiliar_do(Aux),
+    pronoun(Sujeto, SujetoEs, Categoria),
+    verb_infinitive(Verbo, VerboEs, _),
+    persona_de_categoria(Categoria, PersonaEs),
+    conjugar_espanol(VerboEs, PersonaEs, VerboConjugadoEs),
+    traducir_lista(Resto, english, spanish, RestoTraducido),
+    % Orden español: Verbo + Sujeto + Resto
+    append([VerboConjugadoEs, SujetoEs], RestoTraducido, OracionReordenada).
+
+% Caso especial: Yes/No con verbo pero sin resto
+reordenar_interrogativa([Aux, Sujeto, Verbo], english, spanish, [VerboConjugadoEs, SujetoEs]) :-
+    es_auxiliar_do(Aux),
+    pronoun(Sujeto, SujetoEs, Categoria),
+    verb_infinitive(Verbo, VerboEs, _),
+    persona_de_categoria(Categoria, PersonaEs),
+    conjugar_espanol(VerboEs, PersonaEs, VerboConjugadoEs).
+
+% Interrogativa simple con verbo BE (yes/no question)
+% Ejemplo: "Is he happy?" → "¿Es él feliz?"
+reordenar_interrogativa([Verbo, Sujeto | Resto], english, spanish, OracionReordenada) :-
+    es_verbo_be(Verbo),
+    pronoun(Sujeto, SujetoEs, Categoria),
+    traducir_verbo_be_segun_persona(Verbo, Categoria, VerboEs),
+    traducir_lista(Resto, english, spanish, RestoTraducido),
+    % Orden español: Verbo + Sujeto + Resto
+    append([VerboEs, SujetoEs], RestoTraducido, OracionReordenada).
+
+% --- ESPAÑOL → INGLÉS ---
+% Patrón: [Question_Word, Verb, Subject, ...] → [Question_Word, Auxiliary, Subject, Verb_Infinitive, ...]
+
+% Interrogativa con palabra interrogativa + verbo SER/ESTAR + sustantivo/adjetivo
+% Ejemplo: "¿Cuál es tu nombre?" → "What is your name?"
+% Ejemplo: "¿Cómo estás?" → "How are you?"
+reordenar_interrogativa([QWord, Verbo, Sujeto | Resto], spanish, english, OracionReordenada) :-
+    question_word(QWordEn, QWord),
+    es_verbo_ser_estar(Verbo),
+    !,  % Cut para evitar backtracking
+    % Traducir sujeto (puede ser pronombre o artículo posesivo)
+    (pronoun(SujetoEn, Sujeto, _) -> true ; traducir_palabra(Sujeto, spanish, english, SujetoEn)),
+    traducir_palabra(Verbo, spanish, english, VerboEn),
+    traducir_lista(Resto, spanish, english, RestoTraducido),
+    % Orden inglés: QWord + Verbo + Sujeto + Resto
+    append([QWordEn, VerboEn, SujetoEn], RestoTraducido, OracionReordenada).
+
+% Interrogativa con palabra interrogativa + verbo regular
+% Ejemplo: "¿Qué comes?" → "What do you eat?"
+% Ejemplo: "¿Qué cocinas?" → "What do you cook?"
+reordenar_interrogativa([QWord, Verbo, Sujeto | Resto], spanish, english, OracionReordenada) :-
+    question_word(QWordEn, QWord),
+    es_verbo_token(Verbo, spanish),
+    \+ es_verbo_ser_estar(Verbo),  % Asegurar que NO es SER/ESTAR
+    !,
+    (pronoun(SujetoEn, Sujeto, Categoria) -> true ; (SujetoEn = Sujeto, Categoria = second_singular)),
+    % Obtener infinitivo del verbo
+    (base_espanol(Verbo, InfinitivoEs, _) ; InfinitivoEs = Verbo),
+    traducir_infinitivo(InfinitivoEs, spanish, english, InfinitivoEn),
+    % Determinar auxiliar según categoría
+    auxiliar_segun_categoria(Categoria, Auxiliar),
+    % Traducir resto
+    traducir_lista(Resto, spanish, english, RestoTraducido),
+    % Orden inglés: QWord + Aux + Sujeto + Verbo + Resto
+    append([QWordEn, Auxiliar, SujetoEn, InfinitivoEn], RestoTraducido, OracionReordenada).
+
+% Interrogativa con palabra interrogativa + verbo (sin sujeto explícito)
+% Ejemplo: "¿Cómo estás?" → "How are you?"
+reordenar_interrogativa([QWord, Verbo | Resto], spanish, english, OracionReordenada) :-
+    question_word(QWordEn, QWord),
+    es_verbo_ser_estar(Verbo),
+    !,
+    % Inferir pronombre desde el verbo
+    (base_espanol(Verbo, _, Persona) ; irregular_form_spanish(Verbo, _, Persona, present)),
+    mapear_persona(Persona, spanish, english, PronombreEn),
+    traducir_palabra(Verbo, spanish, english, VerboEn),
+    traducir_lista(Resto, spanish, english, RestoTraducido),
+    % Orden inglés: QWord + Verbo + Pronombre + Resto
+    append([QWordEn, VerboEn, PronombreEn], RestoTraducido, OracionReordenada).
+
+% Interrogativa simple con SER/ESTAR + pronombre
+% Ejemplo: "¿Está feliz?" → "Is he happy?"
+reordenar_interrogativa([Verbo, Sujeto | Resto], spanish, english, OracionReordenada) :-
+    es_verbo_ser_estar(Verbo),
+    pronoun(SujetoEn, Sujeto, _),
+    !,  % Cut para evitar backtracking
+    traducir_palabra(Verbo, spanish, english, VerboEn),
+    traducir_lista(Resto, spanish, english, RestoTraducido),
+    % Orden inglés: Verbo + Sujeto + Resto
+    append([VerboEn, SujetoEn], RestoTraducido, OracionReordenada).
+
+% Interrogativa simple con SER/ESTAR sin pronombre explícito
+% Ejemplo: "¿Estás triste?" → "Are you sad?"
+reordenar_interrogativa([Verbo | Resto], spanish, english, OracionReordenada) :-
+    es_verbo_ser_estar(Verbo),
+    !,
+    % Inferir pronombre desde el verbo
+    (irregular_form_spanish(Verbo, _, Persona, present) -> true ; Persona = tu),
+    mapear_persona(Persona, spanish, english, PronombreEn),
+    traducir_palabra(Verbo, spanish, english, VerboEn),
+    traducir_lista(Resto, spanish, english, RestoTraducido),
+    % Orden inglés: Verbo + Pronombre + Resto
+    append([VerboEn, PronombreEn], RestoTraducido, OracionReordenada).
+
+% Interrogativa simple (yes/no question) con verbo regular
+% Ejemplo: "¿Comes?" → "Do you eat?"
+reordenar_interrogativa([Verbo, Sujeto | Resto], spanish, english, OracionReordenada) :-
+    es_verbo_token(Verbo, spanish),
+    \+ es_verbo_ser_estar(Verbo),  % Asegurar que NO es SER/ESTAR
+    pronoun(SujetoEn, Sujeto, Categoria),
+    (base_espanol(Verbo, InfinitivoEs, _) ; InfinitivoEs = Verbo),
+    traducir_infinitivo(InfinitivoEs, spanish, english, InfinitivoEn),
+    auxiliar_segun_categoria(Categoria, Auxiliar),
+    traducir_lista(Resto, spanish, english, RestoTraducido),
+    % Orden inglés: Aux + Sujeto + Verbo + Resto
+    append([Auxiliar, SujetoEn, InfinitivoEn], RestoTraducido, OracionReordenada).
+
+% Interrogativa con verbo regular sin pronombre explícito
+% Ejemplo: "¿Cocinas?" → "Do you cook?"
+reordenar_interrogativa([Verbo | Resto], spanish, english, OracionReordenada) :-
+    es_verbo_token(Verbo, spanish),
+    \+ es_verbo_ser_estar(Verbo),
+    !,
+    % Inferir persona desde el verbo
+    (base_espanol(Verbo, InfinitivoEs, Persona) ; (InfinitivoEs = Verbo, Persona = tu)),
+    traducir_infinitivo(InfinitivoEs, spanish, english, InfinitivoEn),
+    mapear_persona(Persona, spanish, english, PronombreEn),
+    persona_a_categoria(Persona, Categoria),
+    auxiliar_segun_categoria(Categoria, Auxiliar),
+    traducir_lista(Resto, spanish, english, RestoTraducido),
+    % Orden inglés: Aux + Pronombre + Verbo + Resto
+    append([Auxiliar, PronombreEn, InfinitivoEn], RestoTraducido, OracionReordenada).
+
+% =============================================================================
+% FUNCIONES AUXILIARES PARA INTERROGATIVAS
+% =============================================================================
+
+% Detectar si una oración es interrogativa
+detectar_interrogativa([Primera|_], english) :-
+    ( es_auxiliar_do(Primera) ; es_verbo_be(Primera) ; question_word(Primera, _) ).
+
+detectar_interrogativa([Primera|Resto], spanish) :-
+    ( question_word(_, Primera) ; (es_verbo_token(Primera, spanish), Resto \= []) ).
+
+% Identificar auxiliares DO/DOES
+es_auxiliar_do(do).
+es_auxiliar_do(does).
+
+% Identificar verbo BE en sus formas
+es_verbo_be(am).
+es_verbo_be(is).
+es_verbo_be(are).
+es_verbo_be(was).
+es_verbo_be(were).
+
+% Identificar verbos SER/ESTAR
+es_verbo_ser_estar(soy).
+es_verbo_ser_estar(eres).
+es_verbo_ser_estar(es).
+es_verbo_ser_estar(somos).
+es_verbo_ser_estar(son).
+es_verbo_ser_estar(estoy).
+es_verbo_ser_estar(estas).
+es_verbo_ser_estar(esta).
+es_verbo_ser_estar(estamos).
+es_verbo_ser_estar(estan).
+
+% Mapear categoría de pronombre a persona española
+% Nota: ella y el usan la misma conjugación, así que mapeamos ambos a 'el'
+persona_de_categoria(first_singular, yo).
+persona_de_categoria(second_singular, tu).
+persona_de_categoria(third_singular_masculine, el).
+persona_de_categoria(third_singular_feminine, el).  % Mismo que 'el' para conjugación
+persona_de_categoria(first_plural, nosotros).
+persona_de_categoria(third_plural_masculine, ellos).
+persona_de_categoria(third_plural_feminine, ellos).  % Mismo que 'ellos' para conjugación
+
+% Determinar auxiliar según categoría
+auxiliar_segun_categoria(third_singular_masculine, does).
+auxiliar_segun_categoria(third_singular_feminine, does).
+auxiliar_segun_categoria(_, do).
+
+% Mapear persona a categoría (inverso de persona_de_categoria)
+persona_a_categoria(yo, first_singular).
+persona_a_categoria(tu, second_singular).
+persona_a_categoria(el, third_singular_masculine).
+persona_a_categoria(ella, third_singular_feminine).
+persona_a_categoria(nosotros, first_plural).
+persona_a_categoria(ellos, third_plural_masculine).
+persona_a_categoria(ellas, third_plural_feminine).
+
+% Traducir verbo BE según persona (usa ESTAR por defecto en preguntas de ubicación)
+traducir_verbo_be_segun_persona(am, first_singular, estoy).
+traducir_verbo_be_segun_persona(are, second_singular, estas).
+traducir_verbo_be_segun_persona(is, third_singular_masculine, esta).
+traducir_verbo_be_segun_persona(is, third_singular_feminine, esta).
+traducir_verbo_be_segun_persona(are, first_plural, estamos).
+traducir_verbo_be_segun_persona(are, third_plural_masculine, estan).
+traducir_verbo_be_segun_persona(are, third_plural_feminine, estan).
+
+% Si el contexto indica característica permanente, usar SER
+% (esto se puede extender con análisis del complemento)
+traducir_verbo_be_a_ser(am, soy).
+traducir_verbo_be_a_ser(are, eres).
+traducir_verbo_be_a_ser(is, es).
+traducir_verbo_be_a_ser(are, son).

@@ -19,6 +19,19 @@ pronoun(they, ellos, third_plural_masculine).
 pronoun(they, ellas, third_plural_feminine).
 
 % =============================================================================
+% 1.B POSSESSIVE ADJECTIVES
+% =============================================================================
+% possessive_adjective(English, Spanish, Person)
+
+possessive_adjective(my, mi, first_singular).
+possessive_adjective(your, tu, second_singular).
+possessive_adjective(his, su, third_singular_masculine).
+possessive_adjective(her, su, third_singular_feminine).
+possessive_adjective(our, nuestro, first_plural).          % masculine form
+possessive_adjective(our, nuestra, first_plural).          % feminine form
+possessive_adjective(their, su, third_plural).
+
+% =============================================================================
 % 2. ARTICLES
 % =============================================================================
 % article(English, Spanish, Gender, Number)
@@ -74,6 +87,8 @@ noun(water, agua, feminine, singular).
 noun(bread, pan, masculine, singular).
 noun(apple, manzana, feminine, singular).
 noun(coffee, cafe, masculine, singular).
+noun(rice, arroz, masculine, singular).
+noun(fish, pescado, masculine, singular).
 
 % Places
 noun(park, parque, masculine, singular).
@@ -84,6 +99,13 @@ noun(city, ciudad, feminine, singular).
 noun(day, dia, masculine, singular).
 noun(night, noche, feminine, singular).
 noun(life, vida, feminine, singular).
+noun(name, nombre, masculine, singular).
+noun(animal, animal, masculine, singular).
+noun(animals, animales, masculine, plural).
+noun(brother, hermano, masculine, singular).
+noun(brothers, hermanos, masculine, plural).
+noun(sister, hermana, feminine, singular).
+noun(sisters, hermanas, feminine, plural).
 
 % =============================================================================
 % 4. ADJECTIVES
@@ -164,6 +186,16 @@ adjective(fast, rapida, feminine, singular).
 adjective(slow, lento, masculine, singular).
 adjective(slow, lenta, feminine, singular).
 
+adjective(favorite, favorito, masculine, singular).
+adjective(favorite, favorita, feminine, singular).
+adjective(favorite, favoritos, masculine, plural).
+adjective(favorite, favoritas, feminine, plural).
+
+adjective(sad, triste, masculine, singular).
+adjective(sad, triste, feminine, singular).
+adjective(sad, tristes, masculine, plural).
+adjective(sad, tristes, feminine, plural).
+
 % =============================================================================
 % 5. VERBS - REGULAR
 % =============================================================================
@@ -180,6 +212,7 @@ verb_infinitive(love, amar, ar).
 verb_infinitive(help, ayudar, ar).
 verb_infinitive(buy, comprar, ar).
 verb_infinitive(call, llamar, ar).
+verb_infinitive(cook, cocinar, ar).
 
 % -ER verbs
 verb_infinitive(eat, comer, er).
