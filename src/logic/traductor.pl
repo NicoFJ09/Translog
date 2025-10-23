@@ -7,11 +7,12 @@
 % =============================================================================
 
 % ESPAÑOL → INGLÉS: buscar en posición 2 → retornar posición 1
-traducir_palabra(Palabra, spanish, english, Traduccion) :-
-    pronoun(Traduccion, Palabra, _), !.
-
+% IMPORTANTE: Artículo ANTES de pronombre para evitar "el" artículo → "he" 
 traducir_palabra(Palabra, spanish, english, Traduccion) :-
     article(Traduccion, Palabra, _, _), !.
+
+traducir_palabra(Palabra, spanish, english, Traduccion) :-
+    pronoun(Traduccion, Palabra, _), !.
 
 traducir_palabra(Palabra, spanish, english, Traduccion) :-
     noun(Traduccion, Palabra, _, _), !.
@@ -142,6 +143,36 @@ traducir_lista([Palabra|Resto], LangOrigen, LangDestino, [Traducida|RestoTraduci
     traducir_lista(Resto, LangOrigen, LangDestino, RestoTraducido).
 
 % =============================================================================
+% TRADUCIR LISTA CON CONTEXTO (para resolver ambigüedades)
+% =============================================================================
+
+% Versión con contexto que mira el siguiente token
+traducir_lista_contextual([], _, _, []).
+
+% Caso especial: "el" en español seguido de sustantivo → artículo "the"
+traducir_lista_contextual([el|[Siguiente|Resto]], spanish, english, [the|RestoTrad]) :-
+    es_nombre_token(Siguiente, spanish),
+    traducir_lista_contextual([Siguiente|Resto], spanish, english, RestoTrad), !.
+
+% Caso especial: "el" en español seguido de verbo → pronombre "he"
+traducir_lista_contextual([el|[Siguiente|Resto]], spanish, english, [he|RestoTrad]) :-
+    es_verbo_token(Siguiente, spanish),
+    traducir_lista_contextual([Siguiente|Resto], spanish, english, RestoTrad), !.
+
+% Caso especial: "el" en español seguido de adjetivo → pronombre "he"
+traducir_lista_contextual([el|[Siguiente|Resto]], spanish, english, [he|RestoTrad]) :-
+    es_adjetivo_token(Siguiente, spanish),
+    traducir_lista_contextual([Siguiente|Resto], spanish, english, RestoTrad), !.
+
+% Caso especial: "el" al final → artículo por defecto
+traducir_lista_contextual([el], spanish, english, [the]) :- !.
+
+% Caso general: traducir palabra normalmente
+traducir_lista_contextual([Palabra|Resto], LangOrigen, LangDestino, [Traducida|RestoTraducido]) :-
+    traducir_palabra(Palabra, LangOrigen, LangDestino, Traducida),
+    traducir_lista_contextual(Resto, LangOrigen, LangDestino, RestoTraducido).
+
+% =============================================================================
 % CONCORDANCIA Y VERIFICACIÓN
 % =============================================================================
 
@@ -249,21 +280,19 @@ ajustar_adjetivo_genero_ingles(AdjetivoIngles, _, AdjetivoIngles).
 % --- Reordenar español → inglés ---
 
 % Con adjetivo: [art, sust, adj] → [art, adj, sust]
-reordenar_sintagma_nominal_es_a_en([Articulo, Sustantivo, Adjetivo], [ArticuloEn, AdjetivoEn, SustantivoEn]) :-
-    article(ArticuloEn, Articulo, Genero, Numero),
-    noun(SustantivoEn, Sustantivo, Genero, Numero),
-    adjective(AdjetivoEn, Adjetivo, Genero, Numero),
-    % Ajustar a/an si es necesario
-    ( (ArticuloEn = a, Numero = singular) ->
-        seleccionar_articulo_ingles(SustantivoEn, singular, ArticuloFinal),
-        ArticuloEn = ArticuloFinal
-    ; true
-    ).
+reordenar_sintagma_nominal_es_a_en([Articulo, Sustantivo, Adjetivo], Resultado) :-
+    % Primero traducir cada palabra
+    traducir_palabra(Articulo, spanish, english, ArticuloEn),
+    traducir_palabra(Sustantivo, spanish, english, SustantivoEn),
+    traducir_palabra(Adjetivo, spanish, english, AdjetivoEn),
+    % REORDENAR: construir lista en orden [Art, ADJ, Sust]
+    Resultado = [ArticuloEn, AdjetivoEn, SustantivoEn], !.
 
 % Sin adjetivo: [art, sust] → [art, sust]
-reordenar_sintagma_nominal_es_a_en([Articulo, Sustantivo], [ArticuloEn, SustantivoEn]) :-
-    article(ArticuloEn, Articulo, Genero, Numero),
-    noun(SustantivoEn, Sustantivo, Genero, Numero).
+reordenar_sintagma_nominal_es_a_en([Articulo, Sustantivo], Resultado) :-
+    traducir_palabra(Articulo, spanish, english, ArticuloEn),
+    traducir_palabra(Sustantivo, spanish, english, SustantivoEn),
+    Resultado = [ArticuloEn, SustantivoEn], !.
 
 % Una sola palabra
 reordenar_sintagma_nominal_es_a_en([Palabra], [Traduccion]) :-
@@ -272,15 +301,19 @@ reordenar_sintagma_nominal_es_a_en([Palabra], [Traduccion]) :-
 % --- Reordenar inglés → español ---
 
 % Con adjetivo: [art, adj, sust] → [art, sust, adj]
-reordenar_sintagma_nominal_en_a_es([Articulo, Adjetivo, Sustantivo], [ArticuloEs, SustantivoEs, AdjetivoEs]) :-
-    noun(Sustantivo, SustantivoEs, Genero, Numero),
-    article(Articulo, ArticuloEs, Genero, Numero),
-    adjective(Adjetivo, AdjetivoEs, Genero, Numero).
+reordenar_sintagma_nominal_en_a_es([Articulo, Adjetivo, Sustantivo], Resultado) :-
+    % Primero traducir cada palabra
+    traducir_palabra(Articulo, english, spanish, ArticuloEs),
+    traducir_palabra(Adjetivo, english, spanish, AdjetivoEs),
+    traducir_palabra(Sustantivo, english, spanish, SustantivoEs),
+    % REORDENAR: construir lista en orden [Art, Sust, ADJ]
+    Resultado = [ArticuloEs, SustantivoEs, AdjetivoEs], !.
 
 % Sin adjetivo: [art, sust] → [art, sust]
-reordenar_sintagma_nominal_en_a_es([Articulo, Sustantivo], [ArticuloEs, SustantivoEs]) :-
-    noun(Sustantivo, SustantivoEs, Genero, Numero),
-    article(Articulo, ArticuloEs, Genero, Numero).
+reordenar_sintagma_nominal_en_a_es([Articulo, Sustantivo], Resultado) :-
+    traducir_palabra(Articulo, english, spanish, ArticuloEs),
+    traducir_palabra(Sustantivo, english, spanish, SustantivoEs),
+    Resultado = [ArticuloEs, SustantivoEs], !.
 
 % Una sola palabra
 reordenar_sintagma_nominal_en_a_es([Palabra], [Traduccion]) :-
@@ -294,3 +327,179 @@ reordenar_sn([Det, Adj, Noun], english, spanish, [Det, Noun, Adj]).
 reordenar_sn([Det, Noun, Adj], spanish, english, [Det, Adj, Noun]).
 reordenar_sn([Det, Noun], _, _, [Det, Noun]).
 reordenar_sn([Pronombre], _, _, [Pronombre]).
+
+% =============================================================================
+% TRADUCCIÓN INTELIGENTE DE ORACIONES
+% =============================================================================
+
+% Punto de entrada principal: traducir una oración completa
+traducir_oracion(Tokens, LangOrigen, LangDestino, Traduccion) :-
+    detectar_y_traducir_sn_verbo(Tokens, LangOrigen, LangDestino, Traduccion), !.
+
+% Fallback: intentar traducir como SN puro (sin verbo)
+traducir_oracion(Tokens, LangOrigen, LangDestino, Traduccion) :-
+    extraer_sn_inicial(Tokens, LangOrigen, SN, []),  % SN que consume todos los tokens
+    length(SN, L), L > 0,
+    traducir_sn_con_reorden(SN, LangOrigen, LangDestino, Traduccion), !.
+
+% Último fallback: traducción contextual palabra por palabra
+traducir_oracion(Tokens, LangOrigen, LangDestino, Traduccion) :-
+    traducir_lista_contextual(Tokens, LangOrigen, LangDestino, Traduccion).
+
+% Detectar patrón: [SN] + Verbo + [resto]
+% Casos: "el gato grande come", "yo como el pan bueno"
+detectar_y_traducir_sn_verbo(Tokens, LangOrigen, LangDestino, Traduccion) :-
+    extraer_sn_inicial(Tokens, LangOrigen, SN, Resto),
+    length(SN, LSN), LSN > 0,
+    Resto = [Verbo|RestoOracion],
+    es_verbo_token(Verbo, LangOrigen),
+    % Traducir cada parte
+    traducir_sn_con_reorden(SN, LangOrigen, LangDestino, SNTrad),
+    traducir_palabra(Verbo, LangOrigen, LangDestino, VerboTrad),
+    traducir_resto_oracion(RestoOracion, LangOrigen, LangDestino, RestoTrad),
+    append(SNTrad, [VerboTrad|RestoTrad], Traduccion), !.
+
+% Extraer sintagma nominal al inicio de la oración
+extraer_sn_inicial(Tokens, Lang, SN, Resto) :-
+    extraer_sn_tokens(Tokens, Lang, SN, Resto),
+    length(SN, L), L > 0, !.
+
+% Patrón: Art + Adj + Nombre (inglés: the big cat)
+extraer_sn_tokens([A, Adj, N|Resto], Lang, [A, Adj, N], Resto) :-
+    es_articulo_token(A, Lang),
+    es_adjetivo_token(Adj, Lang),
+    es_nombre_token(N, Lang),
+    Lang = english,  % Solo para inglés
+    \+ es_verbo_token(N, Lang), !.
+
+% Patrón: Art + Nombre + Adj (español: el gato grande)
+extraer_sn_tokens([A, N, Adj|Resto], Lang, [A, N, Adj], Resto) :-
+    es_articulo_token(A, Lang),
+    es_nombre_token(N, Lang),
+    es_adjetivo_token(Adj, Lang),
+    \+ es_verbo_token(Adj, Lang), !.
+
+% Patrón: Art + Nombre (verificar que sea nombre, no verbo ni adjetivo solo)
+extraer_sn_tokens([A, N|Resto], Lang, [A, N], Resto) :-
+    es_articulo_token(A, Lang),
+    es_nombre_token(N, Lang),
+    \+ es_verbo_token(N, Lang), !.
+
+% Patrón: Pronombre solo (nunca capturar "el" si no viene con sustantivo)
+extraer_sn_tokens([P|Resto], Lang, [P], Resto) :-
+    es_pronombre_token(P, Lang),
+    % Excluir "el" si viene seguido de verbo/adjetivo (es pronombre, no sintagma)
+    \+ (P = el, Lang = spanish, Resto = [Siguiente|_], 
+        (es_verbo_token(Siguiente, spanish) ; 
+         (es_adjetivo_token(Siguiente, spanish), \+ es_nombre_token(Siguiente, spanish)))), !.
+
+% Patrón: Adj + Nombre (inglés sin artículo: big cat)
+extraer_sn_tokens([Adj, N|Resto], Lang, [Adj, N], Resto) :-
+    es_adjetivo_token(Adj, Lang),
+    es_nombre_token(N, Lang),
+    Lang = english,  % Solo para inglés
+    \+ es_verbo_token(N, Lang), !.
+
+% Patrón: Nombre + Adj (español sin artículo: gato grande)
+extraer_sn_tokens([N, Adj|Resto], Lang, [N, Adj], Resto) :-
+    es_nombre_token(N, Lang),
+    es_adjetivo_token(Adj, Lang),
+    \+ es_verbo_token(Adj, Lang), !.
+
+% Patrón: Nombre solo (asegurar que es sustantivo, no verbo)
+extraer_sn_tokens([N|Resto], Lang, [N], Resto) :-
+    es_nombre_token(N, Lang),
+    \+ es_verbo_token(N, Lang),
+    \+ es_pronombre_token(N, Lang), !.
+
+% Si no coincide nada, retornar vacío
+extraer_sn_tokens(Tokens, _, [], Tokens).
+
+% Traducir SN aplicando reordenamiento según sea necesario
+traducir_sn_con_reorden([Art, Nombre, Adj], spanish, english, Resultado) :-
+    es_articulo_token(Art, spanish),
+    es_nombre_token(Nombre, spanish),
+    es_adjetivo_token(Adj, spanish),
+    % Reordenar y traducir: [Art, Nombre, Adj] → [Art, Adj, Nombre]
+    reordenar_sintagma_nominal_es_a_en([Art, Nombre, Adj], Resultado), !.
+
+traducir_sn_con_reorden([Art, Nombre], spanish, english, Resultado) :-
+    es_articulo_token(Art, spanish),
+    es_nombre_token(Nombre, spanish),
+    % Traducir sin reordenar
+    reordenar_sintagma_nominal_es_a_en([Art, Nombre], Resultado), !.
+
+traducir_sn_con_reorden([Nombre, Adj], spanish, english, [AdjEn, NombreEn]) :-
+    es_nombre_token(Nombre, spanish),
+    es_adjetivo_token(Adj, spanish),
+    % Reordenar nombre-adj a adj-nombre
+    traducir_palabra(Nombre, spanish, english, NombreEn),
+    traducir_palabra(Adj, spanish, english, AdjEn), !.
+
+traducir_sn_con_reorden([Art, Adj, Nombre], english, spanish, Resultado) :-
+    es_articulo_token(Art, english),
+    es_adjetivo_token(Adj, english),
+    es_nombre_token(Nombre, english),
+    % Reordenar y traducir: [Art, Adj, Nombre] → [Art, Nombre, Adj]
+    reordenar_sintagma_nominal_en_a_es([Art, Adj, Nombre], Resultado), !.
+
+traducir_sn_con_reorden([Art, Nombre], english, spanish, Resultado) :-
+    es_articulo_token(Art, english),
+    es_nombre_token(Nombre, english),
+    % Traducir sin reordenar
+    reordenar_sintagma_nominal_en_a_es([Art, Nombre], Resultado), !.
+
+traducir_sn_con_reorden([Adj, Nombre], english, spanish, [NombreEs, AdjEs]) :-
+    es_adjetivo_token(Adj, english),
+    es_nombre_token(Nombre, english),
+    % Reordenar adj-nombre a nombre-adj
+    traducir_palabra(Nombre, english, spanish, NombreEs),
+    traducir_palabra(Adj, english, spanish, AdjEs), !.
+
+% Caso pronombre
+traducir_sn_con_reorden([Pronombre], LangOrigen, LangDestino, [PronTrad]) :-
+    es_pronombre_token(Pronombre, LangOrigen),
+    traducir_palabra(Pronombre, LangOrigen, LangDestino, PronTrad), !.
+
+% Fallback usando traducción contextual
+traducir_sn_con_reorden(SN, LangOrigen, LangDestino, SNTrad) :-
+    traducir_lista_contextual(SN, LangOrigen, LangDestino, SNTrad).
+
+% Traducir el resto de la oración (puede contener otro SN)
+traducir_resto_oracion([], _, _, []) :- !.
+
+traducir_resto_oracion(Tokens, LangOrigen, LangDestino, Traduccion) :-
+    extraer_sn_inicial(Tokens, LangOrigen, SN, Resto),
+    length(SN, L), L > 0,
+    traducir_sn_con_reorden(SN, LangOrigen, LangDestino, SNTrad),
+    traducir_resto_oracion(Resto, LangOrigen, LangDestino, RestoTrad),
+    append(SNTrad, RestoTrad, Traduccion), !.
+
+traducir_resto_oracion(Tokens, LangOrigen, LangDestino, Traduccion) :-
+    traducir_lista_contextual(Tokens, LangOrigen, LangDestino, Traduccion).
+
+% =============================================================================
+% HELPERS PARA DETECCIÓN DE TIPOS
+% =============================================================================
+
+es_articulo_token(Palabra, spanish) :- article(_, Palabra, _, _).
+es_articulo_token(Palabra, english) :- article(Palabra, _, _, _).
+
+es_nombre_token(Palabra, spanish) :- noun(_, Palabra, _, _).
+es_nombre_token(Palabra, english) :- noun(Palabra, _, _, _).
+
+es_adjetivo_token(Palabra, spanish) :- adjective(_, Palabra, _, _).
+es_adjetivo_token(Palabra, english) :- adjective(Palabra, _, _, _).
+
+es_pronombre_token(Palabra, spanish) :- pronoun(_, Palabra, _).
+es_pronombre_token(Palabra, english) :- pronoun(Palabra, _, _).
+
+es_verbo_token(Palabra, spanish) :- 
+    (verb_infinitive(_, Palabra, _) ; 
+     irregular_form_spanish(Palabra, _, _, present) ;
+     base_espanol(Palabra, _, _)).  % Reconocer verbos conjugados regulares
+
+es_verbo_token(Palabra, english) :- 
+    (verb_infinitive(Palabra, _, _) ; 
+     irregular_form(Palabra, _, _, present) ;
+     base_ingles(Palabra, _, _)).  % Reconocer verbos conjugados regulares

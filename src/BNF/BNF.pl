@@ -45,7 +45,7 @@ bucle(LangOrigen, LangDestino) :-
     ;
         split_string(InputStr, " ", " ", TokensStr),
         maplist(atom_string, Tokens, TokensStr),
-        traducir_lista(Tokens, LangOrigen, LangDestino, Traduccion),
+        traducir_oracion(Tokens, LangOrigen, LangDestino, Traduccion),
         atomic_list_concat(Traduccion, ' ', OracionFinal),
         write('Traducción: '), write(OracionFinal), nl,
         bucle(LangOrigen, LangDestino)
