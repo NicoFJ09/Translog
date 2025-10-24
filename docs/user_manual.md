@@ -141,7 +141,7 @@ Salida:  "yo tengo veintinueve perros"
 
 ---
 
-## ⚠️ LIMITACIONES CONOCIDAS
+## LIMITACIONES CONOCIDAS
 
 ### 1. **Vocabulario limitado**
 - Aproximadamente 200 palabras base
