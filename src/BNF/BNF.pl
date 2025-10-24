@@ -88,7 +88,32 @@ bucle(LangOrigen, LangDestino) :-
         string_to_word_list(StringLower, Input),
         preprocesar(LangOrigen, Input, Preprocesado),
         traducir_oracion(Preprocesado, LangOrigen, LangDestino, Traduccion),
-        atomic_list_concat(Traduccion, ' ', OracionFinal),
-        write('Traducción: '), write(OracionFinal), nl,
-        bucle(LangOrigen, LangDestino)
+        % Verificar si hay palabras no reconocidas
+        ( tiene_palabras_no_reconocidas(Preprocesado, Traduccion) ->
+            mostrar_error_palabra_desconocida(LangOrigen),
+            bucle(LangOrigen, LangDestino)
+        ;
+            atomic_list_concat(Traduccion, ' ', OracionFinal),
+            write('Traducción: '), write(OracionFinal), nl,
+            bucle(LangOrigen, LangDestino)
+        )
     ).
+
+% Verificar si hay palabras no reconocidas (palabras que se quedaron iguales)
+tiene_palabras_no_reconocidas([], []).
+tiene_palabras_no_reconocidas([P|Resto1], [T|Resto2]) :-
+    ( P = T ->
+        % Si la palabra original es igual a la traducida, no se reconoce
+        % EXCEPTO puntuación
+        \+ member(P, ['.', ',', '?', '!', ';', ':'])
+    ;
+        tiene_palabras_no_reconocidas(Resto1, Resto2)
+    ).
+tiene_palabras_no_reconocidas([_|Resto1], [_|Resto2]) :-
+    tiene_palabras_no_reconocidas(Resto1, Resto2).
+
+% Mostrar mensaje de error según el idioma de origen
+mostrar_error_palabra_desconocida(spanish) :-
+    nl, write('Lo siento, no reconozco alguna palabra. ¿Puedes repetir eso de nuevo?'), nl.
+mostrar_error_palabra_desconocida(english) :-
+    nl, write('Sorry, I don\'t recognize some word. Can you repeat that again?'), nl.
