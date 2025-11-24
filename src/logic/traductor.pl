@@ -19,6 +19,7 @@ traducir_palabra(Palabra, spanish, english, Traduccion) :-
     ; preposition(Traduccion, Palabra) -> true
     ; conjunction(Traduccion, Palabra) -> true
     ; negative(Traduccion, Palabra) -> true
+    ; number_word(Traduccion, Palabra) -> true
     ; article(Traduccion, Palabra, _, _) -> true
     ; noun(Traduccion, Palabra, _, _) -> true
     ; adjective(Traduccion, Palabra, _, _) -> true
@@ -34,9 +35,10 @@ traducir_palabra(Palabra, english, spanish, Traduccion) :-
     ; preposition(Palabra, Traduccion) -> true
     ; conjunction(Palabra, Traduccion) -> true
     ; negative(Palabra, Traduccion) -> true
+    ; number_word(Palabra, Traduccion) -> true
     ; article(Palabra, Traduccion, _, _) -> true
     ; noun(Palabra, Traduccion, _, _) -> true
-    ; adjective(Palabra, Traduccion, _, _) -> true
+    ; adjective(Traduccion, Palabra, _, _) -> true
     ; traducir_verbo(Palabra, english, spanish, Traduccion) -> true
     ; Traduccion = Palabra
     ), !.

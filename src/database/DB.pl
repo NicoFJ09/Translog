@@ -430,3 +430,37 @@ auxiliary(does).
 auxiliary(is).
 auxiliary(are).
 auxiliary(am).
+
+% =============================================================================
+% NUMBER WORDS - number_word(English, Spanish)
+% =============================================================================
+
+number_word(zero, cero).
+number_word(one, uno).
+number_word(two, dos).
+number_word(three, tres).
+number_word(four, cuatro).
+number_word(five, cinco).
+number_word(six, seis).
+number_word(seven, siete).
+number_word(eight, ocho).
+number_word(nine, nueve).
+number_word(ten, diez).
+number_word(eleven, once).
+number_word(twelve, doce).
+number_word(thirteen, trece).
+number_word(fourteen, catorce).
+number_word(fifteen, quince).
+number_word(sixteen, dieciseis).
+number_word(seventeen, diecisiete).
+number_word(eighteen, dieciocho).
+number_word(nineteen, diecinueve).
+number_word(twenty, veinte).
+number_word(thirty, treinta).
+number_word(forty, cuarenta).
+number_word(fifty, cincuenta).
+number_word(sixty, sesenta).
+number_word(seventy, setenta).
+number_word(eighty, ochenta).
+number_word(ninety, noventa).
+number_word(hundred, cien).

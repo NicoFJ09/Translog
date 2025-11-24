@@ -113,28 +113,22 @@ Inglés → Español:
 • the big dog runs very fast → el perro grande corre muy rapido
 • i work with my friend → yo trabajo con mi amigo
 • we eat bread and cheese → nosotros comemos pan y queso
-• he is very tired today → el es muy cansado hoy
 ```
 
 #### Descripciones Complejas
 ```
 Español → Inglés:
-• el gato negro come pescado en la casa grande → the black cat eats fish in the big house
 • la mujer inteligente lee un libro dificil → the intelligent woman reads a difficult book
-• el perro pequeno bebe agua fria → the small dog drinks water cold
-• yo tengo un libro viejo y un libro nuevo → i have an old book and a new book
 
 Inglés → Español:
 • the intelligent woman reads a difficult book → la mujer inteligente lee un libro dificil
-• i have an old book and a new book → yo tengo un viejo libro y un nuevo libro
 ```
 
 #### Frases de Ubicación y Estado
 ```
 Español → Inglés:
-• el gato esta en la mesa → the cat is on the table
-• la nina esta con su madre → the girl is with her mother
-• yo estoy en la escuela ahora → i am at the school now
+• el gato esta en la casa → the cat is in the house
+• yo estoy en la escuela ahora → i am in the school now
 • el libro esta sobre la mesa → the book is on the table
 
 Inglés → Español:
@@ -147,23 +141,20 @@ Inglés → Español:
 ```
 Español → Inglés:
 • yo como pan con queso en la casa → i eat bread with cheese in the house
-• el perro grande bebe agua fria en el parque → the big dog drinks water cold in he park
+• yo como pan con queso → i eat bread with cheese
 
 Inglés → Español:
 • i eat bread with cheese at home → yo como pan con queso en hogar
-• the big dog drinks cold water in the park → el perro grande bebe frio agua en el parque
 ```
 
-#### Secuencias Conversacionales
+#### Secuencias Conversacionales (Dos Oraciones)
 ```
 Español → Inglés:
-• hola. yo soy tu amigo → hello . i am you friend
 • el gato es grande. el perro es pequeno → the cat is big . the dog is small
 • yo como pan. tu bebes agua → i eat bread . you drink water
 
 Inglés → Español:
 • hello. i am your friend → hola . yo soy tu amigo
-• the cat is big. the dog is small → el gato es grande . el perro es pequeno
 • i eat bread. you drink water → yo como pan . tu bebes agua
 ```
 
@@ -173,11 +164,8 @@ Español → Inglés:
 • yo siempre como mucho → i always eat much
 • el nunca bebe cafe → he never drinks coffee
 • ella es muy inteligente → she is very intelligent
-
-Inglés → Español:
-• i always eat much → yo siempre comer mucho
-• he never drinks coffee → el nunca beber cafe
-• she is very intelligent → ella is muy inteligente
+• yo como mucho → i eat much
+• el corre rapido → he runs fast
 ```
 
 ### Oraciones Interrogativas
@@ -193,8 +181,8 @@ Inglés → Español:
 
 | Español | Inglés |
 |---------|--------|
-| `yo tengo 5 gatos` | `i have cinco cats` |
-| `i have 3 dogs` | `yo tengo three perros` |
+| `yo tengo 5 gatos` | `i have five cats` |
+| `i have 3 dogs` | `yo tengo tres perros` |
 
 ### Dos Oraciones
 
@@ -324,14 +312,17 @@ CATEGORÍA 1: ESPAÑOL → INGLÉS ........................ 31/31 ✅
 CATEGORÍA 2: INGLÉS → ESPAÑOL ........................ 28/28 ✅
 CATEGORÍA 3: ORACIONES INTERROGATIVAS ................ 8/8 ✅
 CATEGORÍA 4: CASOS ESPECIALES ........................ 14/14 ✅
-CATEGORÍA 5: ORACIONES COMPLEJAS REALISTAS ........... 42/42 ✅
+CATEGORÍA 5: ORACIONES COMPLEJAS REALISTAS ........... 42/42 ⚠️
 
-╔════════════════════════════════════════════════════════════╗
-║                    PRUEBAS COMPLETADAS                     ║
+╔════════════════════════════════════════════════════════════╝
+║         PRUEBAS COMPLETADAS (algunos con issues)          ║
 ╚════════════════════════════════════════════════════════════╝
 
-Total: 123/123 tests passing ✅
+Total: 123/123 tests ejecutados
 ```
+
+**Nota**: Todos los tests se ejecutan sin errores fatales, pero algunos casos complejos 
+tienen traducciones aproximadas (ver sección "Limitaciones Conocidas" abajo).
 
 ### Desglose por Categoría
 
@@ -478,13 +469,13 @@ SintagmaNominal ::= Articulo Nombre
 - ❌ Tiempos compuestos (he comido, I have eaten)
 - ❌ Subjuntivo
 - ❌ Frases subordinadas complejas
-- ❌ Pronombres posesivos en complementos ("mi perro come")
 
-### Traducciones Aproximadas
-Algunos casos tienen traducciones "técnicamente correctas" pero no naturales:
-- `"cold water"` → `"frio agua"` (debería ser "agua fria")
-- `"your friend"` → `"you friend"` (falta posesivo)
-- Orden de adjetivos puede variar
+### Traducciones Aproximadas (con issues conocidos)
+Algunos casos funcionan parcialmente pero tienen problemas:
+- Adjetivos después de preposiciones: `"cold water"` → `"cold agua"` (falta traducción)
+- Orden de adjetivos con preposiciones: `"big house"` → `"big casa"` (falta traducción)
+- Adverbios con verbos regulares en inglés→español: `"i always eat much"` → `"yo siempre comer mucho"` (falta conjugación)
+- Posesivos: `"your friend"` → `"you friend"` (no traduce posesivos bien)
 
 ---
 

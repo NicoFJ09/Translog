@@ -1,11 +1,12 @@
 :- encoding(utf8).
+:- consult('../BNF/numeros.pl').
 :- consult('../logic/traductor.pl').
 :- consult('../logic/text_utils.pl').
-:- consult('../BNF/numeros.pl').
 
 % ===============================================
 % BNF.PL - Interfaz de Usuario
 % ===============================================
+% Dependencies loaded in order: numeros.pl -> traductor.pl -> text_utils.pl
 
 start :-
     write('==================================================='), nl,

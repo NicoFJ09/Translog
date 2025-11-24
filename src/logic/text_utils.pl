@@ -5,6 +5,7 @@
 % ===============================================
 % Note: This file provides text processing utilities
 % It depends on: numeros.pl (preprocesar) and traductor.pl (traducir_oracion)
+% IMPORTANT: These dependencies must be loaded BEFORE this file
 
 % =============================================================================
 % STRING TO WORD LIST
