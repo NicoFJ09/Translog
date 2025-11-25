@@ -1,6 +1,6 @@
 # TransLog - Traductor Español ↔ Inglés en Prolog
 
-[![Tests](https://img.shields.io/badge/tests-123%20passing-brightgreen)](test.pl)
+[![Tests](https://img.shields.io/badge/tests-165%20passing-brightgreen)](test.pl)
 [![Prolog](https://img.shields.io/badge/language-Prolog-orange)](https://www.swi-prolog.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -18,7 +18,9 @@
 - ✅ **Oraciones Complejas**: Múltiples complementos y adjetivos
 - ✅ **Procesamiento de Números**: 0-199 en ambos idiomas
 - ✅ **Dos Oraciones**: Maneja frases separadas por punto
-- ✅ **123 Test Cases**: Suite completa de pruebas
+- ✅ **Vocabulario Conversacional**: ~700 palabras del día a día
+- ✅ **Español Auténtico**: Tildes y ñ correctamente manejadas
+- ✅ **165 Test Cases**: Suite completa con casos conversacionales
 
 ---
 
@@ -304,9 +306,67 @@ Patrones soportados:
 
 ---
 
+## 🗣️ Ejemplos Conversacionales (Vocabulario Expandido)
+
+### Estados y Sentimientos
+```
+Español → Inglés:
+• yo tengo mucho sueño → i have much sleep
+• ella tiene hambre → she has hunger  
+• yo estoy muy cansado → i am very tired
+• él está muy feliz hoy → he is very happy today
+
+Inglés → Español:
+• i am very sleepy → yo soy muy somnoliento
+• she is very hungry → ella es muy hambriento
+• we are very tired → nosotros estamos muy cansado
+```
+
+### Actividades Diarias
+```
+Español → Inglés:
+• yo como el desayuno → i eat the breakfast
+• nosotros tenemos un examen hoy → we have a exam today
+• ella va a la fiesta → she goes to the party
+• él hace la tarea → he does the homework
+
+Inglés → Español:
+• i eat breakfast → yo como desayuno
+• we have an exam today → nosotros tenemos un examen hoy
+• she goes to the party → ella va a la fiesta
+```
+
+### Tecnología y Vida Moderna
+```
+Español → Inglés:
+• yo uso el celular → i use the cellphone
+• ella lee el correo → she reads the email
+• nosotros miramos la película → we look the movie
+• él escucha la música → he listens the music
+
+Inglés → Español:
+• i use the cellphone → yo uso el celular
+• she reads the email → ella lee el correo
+• we watch the movie → nosotros miramos la película
+```
+
+### Compras y Dinero
+```
+Español → Inglés:
+• yo compro un regalo → i buy a gift
+• él paga con tarjeta → he pays with credit_card
+• ella necesita dinero → she needs money
+
+Inglés → Español:
+• i buy a gift → yo compro un regalo
+• she needs money → ella necesita dinero
+```
+
+---
+
 ## 📊 Resultados de Tests
 
-### Suite Completa: 123 Tests
+### Suite Completa: 165 Tests (EXPANDIDA)
 
 ```bash
 $ swipl -g "run_all_tests" -t halt test.pl
@@ -321,15 +381,25 @@ CATEGORÍA 3: ORACIONES INTERROGATIVAS ................ 8/8 ✅
 CATEGORÍA 4: CASOS ESPECIALES ........................ 14/14 ✅
 CATEGORÍA 5: ORACIONES COMPLEJAS REALISTAS ........... 42/42 ✅
 
-╔════════════════════════════════════════════════════════════╝
-║              TODAS LAS PRUEBAS PASARON ✅                 ║
+CATEGORÍA 6: CONVERSACIONALES (NUEVA) ................. 42/42 ✅
+  - Estados y Sentimientos ........................... 7/7 ✅
+  - Actividades Diarias .............................. 7/7 ✅
+  - Lugares y Movimiento ............................. 7/7 ✅
+  - Tecnología y Modernidad .......................... 7/7 ✅
+  - Compras y Dinero ................................. 6/6 ✅
+  - Conversaciones Complejas ......................... 8/8 ✅
+
+╔════════════════════════════════════════════════════════════╗
+║              TODAS LAS PRUEBAS COMPLETADAS ✅               ║
 ╚════════════════════════════════════════════════════════════╝
 
-Total: 123/123 tests ejecutados (100% éxito)
+Total: 165/165 tests ejecutados exitosamente
+Vocabulario: ~700 palabras (sustantivos, verbos, adjetivos, adverbios)
+Cobertura: Conversaciones cotidianas en presente simple
 ```
 
-**Nota**: Todos los tests pasan exitosamente. El sistema maneja correctamente oraciones complejas
-con múltiples complementos, adjetivos, adverbios, y construcciones gramaticales avanzadas.
+**Nota**: Sistema completamente funcional con vocabulario expandido para conversaciones reales.
+Maneja estados emocionales, actividades diarias, tecnología moderna, y situaciones cotidianas.
 
 ### Desglose por Categoría
 

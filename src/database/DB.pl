@@ -284,6 +284,20 @@ noun(day, dia, masculine, singular).
 noun(morning, manana, feminine, singular).
 noun(tea, te, masculine, singular).
 
+% Alias conversacionales sin tildes
+noun(sleep, sueno, masculine, singular).
+noun(dream, sueno, masculine, singular).
+noun(baby, bebe, masculine, singular).
+noun(reason, razon, feminine, singular).
+noun(meeting, reunion, feminine, singular).
+noun(solution, solucion, feminine, singular).
+noun(weekend, fin_de_semana, masculine, singular).
+noun(station, estacion, feminine, singular).
+noun(song, cancion, feminine, singular).
+noun(movie, pelicula, feminine, singular).
+noun(tree, arbol, masculine, singular).
+noun(dollar, dolar, masculine, singular).
+
 % =============================================================================
 % ADJECTIVES - adjective(English, Spanish, Gender, Number)
 % =============================================================================
@@ -318,8 +332,12 @@ adjective(sad, triste, masculine, singular).
 adjective(sad, triste, feminine, singular).
 adjective(angry, enojado, masculine, singular).
 adjective(angry, enojada, feminine, singular).
+adjective(angry, enojados, masculine, plural).
+adjective(angry, enojadas, feminine, plural).
 adjective(tired, cansado, masculine, singular).
 adjective(tired, cansada, feminine, singular).
+adjective(tired, cansados, masculine, plural).
+adjective(tired, cansadas, feminine, plural).
 
 adjective(new, nuevo, masculine, singular).
 adjective(new, nueva, feminine, singular).
@@ -365,24 +383,42 @@ adjective(favorite, favorita, feminine, singular).
 % Conversacionales - Estados y sentimientos
 adjective(sleepy, somnoliento, masculine, singular).
 adjective(sleepy, somnolienta, feminine, singular).
+adjective(sleepy, somnolientos, masculine, plural).
+adjective(sleepy, somnolientas, feminine, plural).
 adjective(hungry, hambriento, masculine, singular).
 adjective(hungry, hambrienta, feminine, singular).
+adjective(hungry, hambrientos, masculine, plural).
+adjective(hungry, hambrientas, feminine, plural).
 adjective(thirsty, sediento, masculine, singular).
 adjective(thirsty, sedienta, feminine, singular).
 adjective(sick, enfermo, masculine, singular).
 adjective(sick, enferma, feminine, singular).
+adjective(sick, enfermos, masculine, plural).
+adjective(sick, enfermas, feminine, plural).
 adjective(healthy, sano, masculine, singular).
 adjective(healthy, sana, feminine, singular).
+adjective(healthy, sanos, masculine, plural).
+adjective(healthy, sanas, feminine, plural).
 adjective(nervous, nervioso, masculine, singular).
 adjective(nervous, nerviosa, feminine, singular).
+adjective(nervous, nerviosos, masculine, plural).
+adjective(nervous, nerviosas, feminine, plural).
 adjective(worried, preocupado, masculine, singular).
 adjective(worried, preocupada, feminine, singular).
+adjective(worried, preocupados, masculine, plural).
+adjective(worried, preocupadas, feminine, plural).
 adjective(excited, emocionado, masculine, singular).
 adjective(excited, emocionada, feminine, singular).
+adjective(excited, emocionados, masculine, plural).
+adjective(excited, emocionadas, feminine, plural).
 adjective(bored, aburrido, masculine, singular).
 adjective(bored, aburrida, feminine, singular).
+adjective(bored, aburridos, masculine, plural).
+adjective(bored, aburridas, feminine, plural).
 adjective(busy, ocupado, masculine, singular).
 adjective(busy, ocupada, feminine, singular).
+adjective(busy, ocupados, masculine, plural).
+adjective(busy, ocupadas, feminine, plural).
 adjective(free, libre, masculine, singular).
 adjective(free, libre, feminine, singular).
 adjective(ready, listo, masculine, singular).
@@ -713,6 +749,15 @@ irregular_form_spanish(hacemos, hacer, nosotros, present).
 irregular_form_spanish(hacen, hacer, ellos, present).
 irregular_form_spanish(hacen, hacer, ellas, present).
 
+% Forms of "beber" (to drink) - marked as irregular to prioritize over noun "bebe" (baby)
+irregular_form_spanish(bebo, beber, yo, present).
+irregular_form_spanish(bebes, beber, tu, present).
+irregular_form_spanish(bebe, beber, el, present).
+irregular_form_spanish(bebe, beber, ella, present).
+irregular_form_spanish(bebemos, beber, nosotros, present).
+irregular_form_spanish(beben, beber, ellos, present).
+irregular_form_spanish(beben, beber, ellas, present).
+
 % =============================================================================
 % IRREGULAR VERB PAIRS
 % =============================================================================
@@ -722,6 +767,7 @@ irregular_verb_pair(estar, be).
 irregular_verb_pair(ir, go).
 irregular_verb_pair(tener, have).
 irregular_verb_pair(hacer, do).
+irregular_verb_pair(beber, drink).
 
 % =============================================================================
 % PREPOSITIONS - preposition(English, Spanish)

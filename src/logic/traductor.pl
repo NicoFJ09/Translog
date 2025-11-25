@@ -153,17 +153,43 @@ traducir_oracion(Tokens, LangOrigen, LangDestino, Traduccion) :-
         ;
             traducir_verbo_con_contexto(Verbo, PronombreOrigen, english, spanish, VerboTrad)
         )
+    ; LangOrigen = spanish, LangDestino = english ->
+        % Use traducir_verbo directly to avoid noun/verb ambiguity
+        traducir_verbo(Verbo, spanish, english, VerboTrad)
     ;
         traducir_palabra(Verbo, LangOrigen, LangDestino, VerboTrad)
     ),
-    traducir_complemento(Resto, LangOrigen, LangDestino, ComplementoTrad),
-    % Special handling for frequency adverbs: in English->Spanish, move before verb
-    (LangOrigen = english, LangDestino = spanish,
-     ComplementoTrad = [PrimerToken|RestoComp],
-     member(PrimerToken, [siempre, nunca, ahora, hoy]) ->  % Frequency/time adverbs only
+    % Apply gender/number agreement when translating adjectives with copulative verbs
+    (LangOrigen = english, LangDestino = spanish, 
+     member(Verbo, [am, is, are]),
+     tiene_adjetivo_en_complemento(Resto, english) ->
+        extraer_pronombre_de_sujeto(Sujeto, LangOrigen, PronombreOrigen),
+        traducir_complemento_con_concordancia(Resto, PronombreOrigen, english, spanish, ComplementoTrad)
+    ;
+        traducir_complemento(Resto, LangOrigen, LangDestino, ComplementoTrad)
+    ),
+    % Special handling for frequency adverbs
+    (
+        % English->Spanish: move frequency adverb before verb
+        LangOrigen = english, LangDestino = spanish,
+        ComplementoTrad = [PrimerToken|RestoComp],
+        member(PrimerToken, [siempre, nunca, ahora, hoy]) ->
         append(SujetoTrad, [PrimerToken, VerboTrad|RestoComp], Traduccion)
     ;
-        append(SujetoTrad, [VerboTrad|ComplementoTrad], Traduccion)
+        % Spanish->English: move frequency adverb from after verb to before verb
+        LangOrigen = spanish, LangDestino = english,
+        ComplementoTrad = [PrimerToken|RestoComp],
+        member(PrimerToken, [always, never, now, today]) ->
+        append(SujetoTrad, [PrimerToken, VerboTrad|RestoComp], Traduccion)
+    ;
+        % Default: keep order
+        append(SujetoTrad, [VerboTrad|ComplementoTrad], TraduccionTemp),
+        % Fix implicit subjects after "and" for Spanish->English
+        (LangOrigen = spanish, LangDestino = english, SujetoTrad = [PronombreSujeto] ->
+            agregar_sujeto_implicito(TraduccionTemp, PronombreSujeto, Traduccion)
+        ;
+            Traduccion = TraduccionTemp
+        )
     ).
 
 traducir_oracion(Tokens, LangOrigen, LangDestino, Traduccion) :-
@@ -191,6 +217,13 @@ tiene_contexto_ser_estar([_, _, Token|_], Lang) :-
 tiene_contexto_ser_estar([_, _, _, Token|_], Lang) :-
     (es_preposicion(Token, Lang) ; es_adjetivo(Token, Lang)), !.
 tiene_contexto_ser_estar(_, _) :- fail.
+
+% Helper: Check if complement contains an adjective
+tiene_adjetivo_en_complemento([Token|_], Lang) :-
+    es_adjetivo(Token, Lang), !.
+tiene_adjetivo_en_complemento([_|Resto], Lang) :-
+    tiene_adjetivo_en_complemento(Resto, Lang).
+tiene_adjetivo_en_complemento([], _) :- fail.
 
 % Helper: Get first preposition or adjective from list (skip adverbs like "very")
 obtener_primer_contexto([Token|_], Token) :-
@@ -268,6 +301,43 @@ extraer_pronombre_de_sujeto([Pronombre], Lang, Pronombre) :-
 extraer_pronombre_de_sujeto([_|_], spanish, el) :- !.
 extraer_pronombre_de_sujeto([_|_], english, it) :- !.
 extraer_pronombre_de_sujeto(_, _, i).
+
+% =============================================================================
+% TRADUCIR COMPLEMENTO CON CONCORDANCIA (para adjetivos predicativos)
+% =============================================================================
+
+% Pattern: Adv + Adj with pronoun subject - apply gender/number agreement
+traducir_complemento_con_concordancia([Adv, Adj|Resto], Pronombre, english, spanish, Traduccion) :-
+    es_adverbio(Adv, english),
+    es_adjetivo(Adj, english),
+    !,
+    traducir_palabra(Adv, english, spanish, AdvTrad),
+    pronombre_genero_numero(Pronombre, Genero, Numero),
+    adjective(Adj, AdjTrad, Genero, Numero),
+    traducir_complemento(Resto, english, spanish, RestoTrad),
+    append([AdvTrad, AdjTrad], RestoTrad, Traduccion).
+
+% Pattern: Single Adj with pronoun subject - apply gender/number agreement
+traducir_complemento_con_concordancia([Adj|Resto], Pronombre, english, spanish, Traduccion) :-
+    es_adjetivo(Adj, english),
+    !,
+    pronombre_genero_numero(Pronombre, Genero, Numero),
+    adjective(Adj, AdjTrad, Genero, Numero),
+    traducir_complemento(Resto, english, spanish, RestoTrad),
+    append([AdjTrad], RestoTrad, Traduccion).
+
+% Fallback: no adjective, use normal translation
+traducir_complemento_con_concordancia(Tokens, _, LangOrigen, LangDestino, Traduccion) :-
+    traducir_complemento(Tokens, LangOrigen, LangDestino, Traduccion).
+
+% Helper: Get gender and number from English pronoun
+pronombre_genero_numero(i, masculine, singular).
+pronombre_genero_numero(you, masculine, singular).
+pronombre_genero_numero(he, masculine, singular).
+pronombre_genero_numero(she, feminine, singular).
+pronombre_genero_numero(it, masculine, singular).
+pronombre_genero_numero(we, masculine, plural).
+pronombre_genero_numero(they, masculine, plural).
 
 % =============================================================================
 % TRADUCIR SUJETO
@@ -459,6 +529,26 @@ traducir_complemento([Prep, Noun|Resto], english, spanish, Traduccion) :-
     article(the, ArtTrad, Genero, Numero),
     traducir_complemento(Resto, english, spanish, RestoTrad),
     append([PrepTrad, ArtTrad, NounTrad], RestoTrad, Traduccion).
+
+% Pattern: Adverb + Art + Noun (e.g., "always the cellphone") - must come BEFORE Art+Noun pattern
+traducir_complemento([Adv, Art, Noun|Resto], LangOrigen, LangDestino, Traduccion) :-
+    es_adverbio(Adv, LangOrigen),
+    es_determinante(Art, LangOrigen),
+    es_nombre(Noun, LangOrigen),
+    !,
+    traducir_palabra(Adv, LangOrigen, LangDestino, AdvTrad),
+    traducir_con_genero(Art, Noun, LangOrigen, LangDestino, ArtTrad, NounTrad),
+    traducir_complemento(Resto, LangOrigen, LangDestino, RestoTrad),
+    append([AdvTrad, ArtTrad, NounTrad], RestoTrad, Traduccion).
+
+% Pattern: Art + Noun (without adjective) - must come BEFORE single noun pattern
+traducir_complemento([Art, Noun|Resto], LangOrigen, LangDestino, Traduccion) :-
+    es_determinante(Art, LangOrigen),
+    es_nombre(Noun, LangOrigen),
+    !,
+    traducir_con_genero(Art, Noun, LangOrigen, LangDestino, ArtTrad, NounTrad),
+    traducir_complemento(Resto, LangOrigen, LangDestino, RestoTrad),
+    append([ArtTrad, NounTrad], RestoTrad, Traduccion).
 
 % Pattern: Single noun (base case for recursion)
 traducir_complemento([Noun|Resto], LangOrigen, LangDestino, Traduccion) :-
@@ -659,3 +749,18 @@ es_verbo_ser_estar(estas).
 es_verbo_ser_estar(esta).
 es_verbo_ser_estar(estamos).
 es_verbo_ser_estar(estan).
+
+% =============================================================================
+% FIX IMPLICIT SUBJECTS AFTER CONJUNCTIONS
+% =============================================================================
+
+% Add missing subject pronoun after "and" in Spanish->English translation
+agregar_sujeto_implicito([and, Verbo|Resto], Sujeto, [and, Sujeto, Verbo|RestoFixed]) :-
+    member(Verbo, [am, is, are, was, were, have, has, had]),
+    !,
+    agregar_sujeto_implicito(Resto, Sujeto, RestoFixed).
+
+agregar_sujeto_implicito([Token|Resto], Sujeto, [Token|RestoFixed]) :-
+    agregar_sujeto_implicito(Resto, Sujeto, RestoFixed).
+
+agregar_sujeto_implicito([], _, []).
