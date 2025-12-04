@@ -7,10 +7,26 @@
 % TRADUCTOR.PL - Sistema de Traducción
 % ===============================================
 
-% =============================================================================
-% TRADUCIR UNA PALABRA
-% =============================================================================
-
+/*
+ * traducir_palabra(+Palabra, +LangOrigen, +LangDestino, -Traduccion)
+ * 
+ * Summary: Traduce una palabra individual buscando en la BD según su tipo.
+ * Intenta traducir pronombres, adjetivos posesivos, frases, adverbios, preposiciones,
+ * conjunciones, negaciones, números, artículos, sustantivos, adjetivos y verbos.
+ * Si no encuentra traducción, devuelve la palabra sin cambios.
+ * 
+ * @param Palabra      - Palabra a traducir (ej: "gato", "cat")
+ * @param LangOrigen   - Idioma de origen (spanish, english)
+ * @param LangDestino  - Idioma destino (spanish, english)
+ * @return Traduccion  - Palabra traducida o original
+ * 
+ * Ejemplos:
+ *   ?- traducir_palabra(gato, spanish, english, T).
+ *   T = cat.
+ *   
+ *   ?- traducir_palabra(hello, english, spanish, T).
+ *   T = hola.
+ */
 traducir_palabra(Palabra, spanish, english, Traduccion) :-
     (pronoun(Traduccion, Palabra, _, 1) -> true
     ; possessive_adjective(Traduccion, Palabra, _) -> true
@@ -43,10 +59,26 @@ traducir_palabra(Palabra, english, spanish, Traduccion) :-
     ; Traduccion = Palabra
     ), !.
 
-% =============================================================================
-% TRADUCIR VERBO
-% =============================================================================
-
+/*
+ * traducir_verbo(+Verbo, +LangOrigen, +LangDestino, -VerbTrad)
+ * 
+ * Summary: Traduce un verbo manteniendo su conjugación en el idioma destino.
+ * 1. Lematiza el verbo para obtener infinitivo y persona/pronombre
+ * 2. Traduce el infinitivo
+ * 3. Conjuga en el idioma destino con la misma persona
+ * 
+ * @param Verbo       - Verbo a traducir (ej: "hablo", "eats")
+ * @param LangOrigen  - Idioma origen
+ * @param LangDestino - Idioma destino
+ * @return VerbTrad   - Verbo traducido y conjugado (ej: "speak", "como")
+ * 
+ * Ejemplos:
+ *   ?- traducir_verbo(hablo, spanish, english, T).
+ *   T = speak.
+ *   
+ *   ?- traducir_verbo(eats, english, spanish, T).
+ *   T = come.
+ */
 traducir_verbo(VerbEspanol, spanish, english, VerbIngles) :-
     lematizar_espanol(VerbEspanol, InfEspanol, PersonaEsp),
     traducir_infinitivo(InfEspanol, spanish, english, InfIngles),
@@ -62,6 +94,22 @@ traducir_verbo(VerbIngles, english, spanish, VerbEspanol) :-
 
 traducir_verbo(Verbo, _, _, Verbo).
 
+/*
+ * traducir_verbo_con_contexto(+Verbo, +Pronombre, +LangOrigen, +LangDestino, -VerboTrad)
+ * 
+ * Summary: Traduce un verbo considerando el pronombre/contexto.
+ * Útil para inglés->español donde el pronombre proporciona información de persona.
+ * 
+ * @param Verbo       - Verbo conjugado (ej: "eat", "eats")
+ * @param Pronombre   - Pronombre del sujeto (i, you, he, she, we, they)
+ * @param LangOrigen  - Idioma origen (english)
+ * @param LangDestino - Idioma destino (spanish)
+ * @return VerboTrad  - Verbo conjugado correctamente (ej: "como", "comes")
+ * 
+ * Ejemplos:
+ *   ?- traducir_verbo_con_contexto(eat, he, english, spanish, T).
+ *   T = come.
+ */
 traducir_verbo_con_contexto(VerbIngles, Pronombre, english, spanish, VerbEspanol) :-
     verb_infinitive(VerbIngles, InfEspanol, _),
     !,
@@ -86,10 +134,21 @@ traducir_verbo_con_contexto(VerbIngles, Pronombre, english, spanish, VerbEspanol
 
 traducir_verbo_con_contexto(Verbo, _, _, _, Verbo).
 
-% =============================================================================
-% TRADUCIR INFINITIVO
-% =============================================================================
-
+/*
+ * traducir_infinitivo(+Infinitivo, +LangOrigen, +LangDestino, -InfTrad)
+ * 
+ * Summary: Traduce un verbo en forma infinitiva buscando pares de verbos irregulares
+ * o usando la BD de infinitivos.
+ * 
+ * @param Infinitivo  - Verbo infinitivo (ej: "hablar", "eat")
+ * @param LangOrigen  - Idioma origen
+ * @param LangDestino - Idioma destino
+ * @return InfTrad    - Infinitivo traducido (ej: "speak", "comer")
+ * 
+ * Ejemplos:
+ *   ?- traducir_infinitivo(hablar, spanish, english, T).
+ *   T = speak.
+ */
 traducir_infinitivo(InfEspanol, spanish, english, InfIngles) :-
     (irregular_verb_pair(InfEspanol, InfIngles) -> true
     ; verb_infinitive(InfIngles, InfEspanol, _) -> true
@@ -102,10 +161,21 @@ traducir_infinitivo(InfIngles, english, spanish, InfEspanol) :-
     ; InfEspanol = InfIngles
     ), !.
 
-% =============================================================================
-% MAPEO PERSONA ↔ PRONOMBRE
-% =============================================================================
-
+/*
+ * persona_espanola_a_pronombre(+Persona, -Pronombre)
+ * 
+ * Summary: Convierte una persona gramatical en español a su pronombre en inglés.
+ * 
+ * @param Persona   - Persona en español (yo, tú, él, ella, nosotros, ellos, ellas)
+ * @return Pronombre - Pronombre en inglés (i, you, he, she, we, they)
+ * 
+ * Ejemplos:
+ *   ?- persona_espanola_a_pronombre(yo, P).
+ *   P = i.
+ *   
+ *   ?- persona_espanola_a_pronombre(nosotros, P).
+ *   P = we.
+ */
 persona_espanola_a_pronombre(yo, i).
 persona_espanola_a_pronombre(tu, you).
 persona_espanola_a_pronombre(el, he).
@@ -114,6 +184,19 @@ persona_espanola_a_pronombre(nosotros, we).
 persona_espanola_a_pronombre(ellos, they).
 persona_espanola_a_pronombre(ellas, they).
 
+/*
+ * pronombre_a_persona_espanola(+Pronombre, -Persona)
+ * 
+ * Summary: Convierte un pronombre en inglés a su persona gramatical en español.
+ * Inverso de persona_espanola_a_pronombre/2.
+ * 
+ * @param Pronombre - Pronombre en inglés (i, you, he, she, it, we, they)
+ * @return Persona  - Persona en español (yo, tú, él, ella, nosotros, ellos)
+ * 
+ * Ejemplos:
+ *   ?- pronombre_a_persona_espanola(he, P).
+ *   P = el.
+ */
 pronombre_a_persona_espanola(i, yo).
 pronombre_a_persona_espanola(you, tu).
 pronombre_a_persona_espanola(he, el).
@@ -122,10 +205,20 @@ pronombre_a_persona_espanola(it, el).
 pronombre_a_persona_espanola(we, nosotros).
 pronombre_a_persona_espanola(they, ellos).
 
-% =============================================================================
-% TRADUCIR LISTA DE PALABRAS
-% =============================================================================
-
+/*
+ * traducir_lista(+Lista, +LangOrigen, +LangDestino, -ListaTraducida)
+ * 
+ * Summary: Traduce una lista de palabras elemento por elemento.
+ * 
+ * @param Lista           - Lista de palabras a traducir [the, cat, eats]
+ * @param LangOrigen      - Idioma origen
+ * @param LangDestino     - Idioma destino
+ * @return ListaTraducida - Lista traducida [el, gato, come]
+ * 
+ * Ejemplos:
+ *   ?- traducir_lista([the, cat], english, spanish, T).
+ *   T = [el, gato].
+ */
 traducir_lista([], _, _, []).
 
 traducir_lista([Palabra|Resto], LangOrigen, LangDestino, [Traducida|RestoTrad]) :-

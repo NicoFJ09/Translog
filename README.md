@@ -8,23 +8,23 @@
 
 ---
 
-## 🎯 Características
+## Características
 
-- ✅ **Traducción Bidireccional**: Español ↔ Inglés
-- ✅ **Gramática Completa**: Sujeto + Verbo + Complementos
-- ✅ **Conjugación Verbal**: Verbos regulares e irregulares
-- ✅ **Concordancia de Género**: Articles y adjetivos
-- ✅ **Oraciones Interrogativas**: Detección y traducción
-- ✅ **Oraciones Complejas**: Múltiples complementos y adjetivos
-- ✅ **Procesamiento de Números**: 0-199 en ambos idiomas
-- ✅ **Dos Oraciones**: Maneja frases separadas por punto
-- ✅ **Vocabulario Conversacional**: ~700 palabras del día a día
-- ✅ **Español Auténtico**: Tildes y ñ correctamente manejadas
-- ✅ **165 Test Cases**: Suite completa con casos conversacionales
+- Traducción Bidireccional: Español ↔ Inglés
+- Gramática Completa: Sujeto + Verbo + Complementos
+- Conjugación Verbal: Verbos regulares e irregulares
+- Concordancia de Género: Articles y adjetivos
+- Oraciones Interrogativas: Detección y traducción
+- Oraciones Complejas: Múltiples complementos y adjetivos
+- Procesamiento de Números: 0-199 en ambos idiomas
+- Dos Oraciones: Maneja frases separadas por punto
+- Vocabulario Conversacional: ~700 palabras del día a día
+- Español Auténtico: Tildes y ñ correctamente manejadas
+- 165 Test Cases: Suite completa con casos conversacionales
 
 ---
 
-## 🚀 Inicio Rápido
+## Inicio Rápido
 
 ### Prerrequisitos
 ```bash
@@ -50,7 +50,7 @@ swipl -g "run_all_tests" -t halt test.pl
 
 ---
 
-## 📖 Uso del Traductor
+## Uso del Traductor
 
 ### Modo Interactivo
 
@@ -82,7 +82,7 @@ Traducción: the cat eats fish
 
 ---
 
-## 🧪 Ejemplos de Traducción
+## Ejemplos de Traducción
 
 ### Frases Simples
 
@@ -203,7 +203,7 @@ Inglés → Español:
 
 ---
 
-## 🏗️ Arquitectura
+## Arquitectura
 
 ```
 TransLog/
@@ -260,7 +260,7 @@ Traducción Final
 
 ---
 
-## 🧩 Componentes Principales
+## Componentes Principales
 
 ### 1. Base de Datos (DB.pl)
 Contiene todo el vocabulario bilingüe:
@@ -306,7 +306,7 @@ Patrones soportados:
 
 ---
 
-## 🗣️ Ejemplos Conversacionales (Vocabulario Expandido)
+## Ejemplos Conversacionales (Vocabulario Expandido)
 
 ### Estados y Sentimientos
 ```
@@ -364,34 +364,26 @@ Inglés → Español:
 
 ---
 
-## 📊 Resultados de Tests
+## Resultados de Tests
 
 ### Suite Completa: 165 Tests (EXPANDIDA)
 
 ```bash
 $ swipl -g "run_all_tests" -t halt test.pl
 
-╔════════════════════════════════════════════════════════════╗
-║          TRANSLOG - SUITE DE PRUEBAS COMPLETA             ║
-╚════════════════════════════════════════════════════════════╝
+CATEGORÍA 1: ESPAÑOL → INGLÉS ........................ 31/31
+CATEGORÍA 2: INGLÉS → ESPAÑOL ........................ 28/28
+CATEGORÍA 3: ORACIONES INTERROGATIVAS ................ 8/8
+CATEGORÍA 4: CASOS ESPECIALES ........................ 14/14
+CATEGORÍA 5: ORACIONES COMPLEJAS REALISTAS ........... 42/42
 
-CATEGORÍA 1: ESPAÑOL → INGLÉS ........................ 31/31 ✅
-CATEGORÍA 2: INGLÉS → ESPAÑOL ........................ 28/28 ✅
-CATEGORÍA 3: ORACIONES INTERROGATIVAS ................ 8/8 ✅
-CATEGORÍA 4: CASOS ESPECIALES ........................ 14/14 ✅
-CATEGORÍA 5: ORACIONES COMPLEJAS REALISTAS ........... 42/42 ✅
-
-CATEGORÍA 6: CONVERSACIONALES (NUEVA) ................. 42/42 ✅
-  - Estados y Sentimientos ........................... 7/7 ✅
-  - Actividades Diarias .............................. 7/7 ✅
-  - Lugares y Movimiento ............................. 7/7 ✅
-  - Tecnología y Modernidad .......................... 7/7 ✅
-  - Compras y Dinero ................................. 6/6 ✅
-  - Conversaciones Complejas ......................... 8/8 ✅
-
-╔════════════════════════════════════════════════════════════╗
-║              TODAS LAS PRUEBAS COMPLETADAS ✅               ║
-╚════════════════════════════════════════════════════════════╝
+CATEGORÍA 6: CONVERSACIONALES (NUEVA) ................. 42/42
+  - Estados y Sentimientos ........................... 7/7
+  - Actividades Diarias .............................. 7/7
+  - Lugares y Movimiento ............................. 7/7
+  - Tecnología y Modernidad .......................... 7/7
+  - Compras y Dinero ................................. 6/6
+  - Conversaciones Complejas ......................... 8/8
 
 Total: 165/165 tests ejecutados exitosamente
 Vocabulario: ~700 palabras (sustantivos, verbos, adjetivos, adverbios)
@@ -440,7 +432,7 @@ Maneja estados emocionales, actividades diarias, tecnología moderna, y situacio
 
 ---
 
-## 🎓 Frases para Probar en el BNF (Para Defensa)
+## Frases para Probar en el BNF (Para Defensa)
 
 ### Nivel Básico (Español → Inglés)
 ```
@@ -492,8 +484,6 @@ i always eat much
 she is very intelligent
   → ella es muy inteligente
 ```
-
-### Con Adverbios de Frecuencia (Demuestra Conjugación Avanzada)
 ```
 Español → Inglés:
 yo siempre como mucho     → i always eat much
@@ -566,7 +556,7 @@ he is intelligent         → el es inteligente (característica → ser)
 
 ---
 
-## 🔧 Características Técnicas
+## Características Técnicas
 
 ### Gramática Soportada
 
@@ -600,7 +590,7 @@ SintagmaNominal ::= Articulo Nombre
 
 ---
 
-## 📝 Limitaciones Conocidas
+## Limitaciones Conocidas
 
 ### Vocabulario Limitado
 - ~150 sustantivos
@@ -609,10 +599,10 @@ SintagmaNominal ::= Articulo Nombre
 - Fácilmente expandible en `DB.pl`
 
 ### Patrones No Soportados
-- ❌ Voz pasiva
-- ❌ Tiempos compuestos (he comido, I have eaten)
-- ❌ Subjuntivo
-- ❌ Frases subordinadas complejas
+- Voz pasiva
+- Tiempos compuestos (he comido, I have eaten)
+- Subjuntivo
+- Frases subordinadas complejas
 
 ### Edge Cases Conocidos
 La mayoría de las traducciones funcionan correctamente. Algunos edge cases específicos:
@@ -624,7 +614,7 @@ Estos casos representan menos del 5% de las traducciones y no afectan la funcion
 
 ---
 
-## 🚀 Expansión Futura
+## Expansión Futura
 
 ### Fácil de Expandir
 
@@ -648,7 +638,7 @@ test_case('me gusta la pizza', spanish, english, 124),
 
 ---
 
-## 🎬 Script de Demostración (Para Defensa)
+## Script de Demostración (Para Defensa)
 
 ### Demostración Recomendada - 5 Minutos
 
@@ -669,48 +659,48 @@ Traducción: the cat eats fish
 Traducción: the pretty house
 ```
 
-#### 3. Nivel Avanzado - Oraciones Complejas (1.5 minutos) ⭐
+#### 3. Nivel Avanzado - Oraciones Complejas (1.5 minutos)
 ```
 > el gato negro come pescado en la casa grande
 Traducción: the black cat eats fish in the big house
-✅ Demuestra: Múltiples adjetivos + orden correcto + preposiciones
+(Demuestra: Múltiples adjetivos + orden correcto + preposiciones)
 
 > el perro grande bebe agua fria en el parque
 Traducción: the big dog drinks cold water in the park
-✅ Demuestra: Adjetivos en complementos + concordancia de género
+(Demuestra: Adjetivos en complementos + concordancia de género)
 
 > la mujer inteligente lee un libro dificil
 Traducción: the intelligent woman reads a difficult book
-✅ Demuestra: Adjetivos con sustantivos femeninos + múltiples complementos
+(Demuestra: Adjetivos con sustantivos femeninos + múltiples complementos)
 ```
 
 #### 4. Verbos Irregulares + Ser/Estar (1 minuto)
 ```
 > yo estoy en la escuela ahora
 Traducción: i am in the school now
-✅ Demuestra: ESTAR para ubicación
+(Demuestra: ESTAR para ubicación)
 
 > ella es muy inteligente
 Traducción: she is very intelligent
-✅ Demuestra: SER para características + adverbio de intensidad
+(Demuestra: SER para características + adverbio de intensidad)
 ```
 
 #### 5. Adverbios de Frecuencia (45 segundos)
 ```
 > yo siempre como mucho
 Traducción: i always eat much
-✅ Demuestra: Adverbio antes del verbo + conjugación correcta
+(Demuestra: Adverbio antes del verbo + conjugación correcta)
 
 > el nunca bebe cafe
 Traducción: he never drinks coffee
-✅ Demuestra: Conjugación verbal con pronombre
+(Demuestra: Conjugación verbal con pronombre)
 ```
 
 #### 6. Dos Oraciones (30 segundos)
 ```
 > hola. yo soy tu amigo
 Traducción: hello . i am your friend
-✅ Demuestra: Procesamiento de múltiples oraciones + posesivos
+(Demuestra: Procesamiento de múltiples oraciones + posesivos)
 ```
 
 #### 7. Cambio a Inglés → Español (30 segundos)
@@ -719,26 +709,26 @@ Traducción: hello . i am your friend
 # Seleccionar opción 2 (Inglés → Español)
 ```
 
-#### 8. Traducción Inversa Compleja (1 minuto) ⭐
+#### 8. Traducción Inversa Compleja (1 minuto)
 ```
 > the black cat eats fish in the big house
 Traducción: el gato negro come pescado en la casa grande
-✅ Demuestra: Inversión de orden de adjetivos automática
+(Demuestra: Inversión de orden de adjetivos automática)
 
 > i always eat much
 Traducción: yo siempre como mucho
-✅ Demuestra: Conjugación verbal + reordenamiento de adverbios
+(Demuestra: Conjugación verbal + reordenamiento de adverbios)
 
 > she is very intelligent
 Traducción: ella es muy inteligente
-✅ Demuestra: Verbos irregulares (ella) + adverbios
+(Demuestra: Verbos irregulares (ella) + adverbios)
 ```
 
 #### 9. Interrogativas (30 segundos)
 ```
 > how are you
 Traducción: como estas
-✅ Demuestra: Detección de interrogativas + inversión de orden
+(Demuestra: Detección de interrogativas + inversión de orden)
 ```
 
 ### Puntos Clave para Destacar Durante la Demostración
@@ -770,13 +760,13 @@ Traducción: como estas
 
 ---
 
-## 📜 Licencia
+## Licencia
 
 MIT License - Ver [LICENSE](LICENSE) para detalles
 
 ---
 
-## 👥 Contribuciones
+## Contribuciones
 
 Las contribuciones son bienvenidas! Por favor:
 
@@ -787,21 +777,3 @@ Las contribuciones son bienvenidas! Por favor:
 5. Abre un Pull Request
 
 ---
-
-## 🙏 Agradecimientos
-
-- SWI-Prolog por el excelente sistema Prolog
-- La comunidad de PLN por inspiración en patrones gramaticales
-- Todos los que contribuyeron con feedback y sugerencias
-
----
-
-## 📞 Contacto
-
-Proyecto TransLog - Sistema de Traducción en Prolog
-
-Creado con ❤️ usando Prolog puro
-
----
-
-**Nota**: Este proyecto es educativo y demuestra el uso de Prolog para procesamiento de lenguaje natural. No está diseñado para uso en producción como traductor comercial.

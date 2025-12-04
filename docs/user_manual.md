@@ -68,78 +68,24 @@ Opción:
 ### Modo de traducción
 
 Una vez seleccionado el modo:
-```
->>> Modo: Español → Inglés <<<
+- Modo: Español → Inglés <<<
 
 Escribe la frase a traducir (o "salir" para terminar):
-> el gato grande come
+- el gato grande come
 
 Traducción: the big cat eats
-```
 
 
-## EJEMPLOS DE USO
+### Requisitos de hardware
 
-### 1. Oraciones afirmativas simples
+- Procesador: 1 GHz o superior
+- RAM: 512 MB mínimo
+- Espacio en disco: 50 MB
 
-#### Estructura 1: S + V (Intransitivo)
-```prolog
-Entrada: "ella corre"
-Salida:  "she runs"
+### Requisitos de software
 
-Entrada: "i sleep"
-Salida:  "yo duermo"
-```
-
-#### Estructura 2: S + V + O (Transitivo)
-```prolog
-Entrada: "yo como pan"
-Salida:  "i eat bread"
-
-Entrada: "the cat eats fish"
-Salida:  "el gato come pescado"
-```
-
-#### Estructura 3: S + V + C (Copulativo)
-```prolog
-Entrada: "ella es feliz"
-Salida:  "she is happy"
-
-Entrada: "the dog is big"
-Salida:  "el perro es grande"
-```
-
-### 2. Oraciones con adjetivos
-
-```prolog
-Entrada: "el gato grande come"
-Salida:  "the big cat eats"
-
-Entrada: "i read the good book"
-Salida:  "yo leo el libro bueno"
-```
-
-### 3. Oraciones interrogativas
-
-```prolog
-Entrada: "where is he"
-Salida:  "donde esta el"
-
-Entrada: "como estas"
-Salida:  "how are you"
-```
-
-### 4. Números
-
-```prolog
-Entrada: "tengo 25 gatos"
-Salida:  "i have twenty-five cats"
-
-Entrada: "i have 29 dogs"
-Salida:  "yo tengo veintinueve perros"
-```
-
----
+- SWI-Prolog 8.0 o superior (recomendado: 9.0+)
+- Sistema operativo: Windows, macOS o Linux
 
 ## LIMITACIONES CONOCIDAS
 
