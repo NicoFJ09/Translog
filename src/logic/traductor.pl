@@ -40,7 +40,7 @@ traducir_palabra(Palabra, spanish, english, Traduccion) :-
     ; noun(Traduccion, Palabra, _, _) -> true
     ; adjective(Traduccion, Palabra, _, _) -> true
     ; traducir_verbo(Palabra, spanish, english, Traduccion) -> true
-    ; Traduccion = Palabra
+    ; atom_concat('__UNKNOWN__', Palabra, Traduccion)
     ), !.
 
 traducir_palabra(Palabra, english, spanish, Traduccion) :-
@@ -56,7 +56,7 @@ traducir_palabra(Palabra, english, spanish, Traduccion) :-
     ; noun(Palabra, Traduccion, _, _) -> true
     ; adjective(Palabra, Traduccion, _, _) -> true
     ; traducir_verbo(Palabra, english, spanish, Traduccion) -> true
-    ; Traduccion = Palabra
+    ; atom_concat('__UNKNOWN__', Palabra, Traduccion)
     ), !.
 
 /*
@@ -92,7 +92,7 @@ traducir_verbo(VerbIngles, english, spanish, VerbEspanol) :-
     VerbEspanol = InfEspanol,
     !.
 
-traducir_verbo(Verbo, _, _, Verbo).
+% Fallback removed - let traducir_palabra handle unknown words
 
 /*
  * traducir_verbo_con_contexto(+Verbo, +Pronombre, +LangOrigen, +LangDestino, -VerboTrad)

@@ -145,5 +145,23 @@ procesar_input(InputStr, LangOrigen, LangDestino, _) :-
  *   Traducción: the cat eats
  */
 mostrar_traduccion(Traduccion) :-
-    atomic_list_concat(Traduccion, ' ', OracionFinal),
-    write('Traducción: '), write(OracionFinal), nl.
+    % Extract unknown words and clean them from output
+    findall(PalabraDesconocida, 
+            (member(Palabra, Traduccion), 
+             atom_concat('__UNKNOWN__', PalabraDesconocida, Palabra)), 
+            PalabrasDesconocidas),
+    % Clean the translation by removing __UNKNOWN__ markers
+    findall(PalabraLimpia,
+            (member(Palabra, Traduccion),
+             (atom_concat('__UNKNOWN__', P, Palabra) -> PalabraLimpia = P ; PalabraLimpia = Palabra)),
+            TraduccionLimpia),
+    atomic_list_concat(TraduccionLimpia, ' ', OracionFinal),
+    write('Traducción: '), write(OracionFinal), nl,
+    % Show warning if there were unknown words
+    (PalabrasDesconocidas \= [] ->
+        write('⚠️  Palabras no reconocidas: '),
+        atomic_list_concat(PalabrasDesconocidas, ', ', ListaPalabras),
+        write(ListaPalabras), nl
+    ;
+        true
+    ).
